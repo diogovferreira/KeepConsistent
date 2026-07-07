@@ -15,7 +15,7 @@ class RootScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         //val viewModel = getScreenModel<SearchScreenViewModel>()
-        var currentTab by remember { mutableStateOf("search") }
+        var currentTab by remember { mutableStateOf("home") }
 
 
         Scaffold(

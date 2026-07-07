@@ -123,11 +123,11 @@ sqldelight {
 
 
 android {
-    namespace = "org.dfcoding.modelrepocompose"
+    namespace = "org.dfcoding.keepconsistent"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.dfcoding.modelrepocompose"
+        applicationId = "org.dfcoding.keepconsistent"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
