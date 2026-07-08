@@ -1,9 +1,7 @@
-package com.dfcoding.optcg.data.mappers
+package com.dfcoding.keepconsistent.data.mappers
 
-import com.dfcoding.optcg.data.model.Card
-import com.dfcoding.optcg.data.model.CardDetail
-import com.dfcoding.optcg.data.model.dto.CardDto
 
+/*
 fun CardDto.toCard(): Card = Card(
     id = cardId,
     name = name,
@@ -26,4 +24,4 @@ fun CardDto.toCardDetail(): CardDetail = CardDetail(
     power    = power,
     cost     = cost,
     rarity   = rarity,
-)
+)*/

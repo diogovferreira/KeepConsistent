@@ -1,4 +1,4 @@
-package com.dfcoding.optcg.database
+package com.dfcoding.keepconsistent.database
 
 import app.cash.sqldelight.db.SqlDriver
 

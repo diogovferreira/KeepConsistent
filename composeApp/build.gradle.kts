@@ -115,8 +115,8 @@ kotlin {
 
 sqldelight {
     databases {
-        create("TcgDatabase") {
-            packageName.set("com.dfcoding.optcg.database")  // matches your folder
+        create("ConsistentDatabase") {
+            packageName.set("com.dfcoding.keepconsistent.database")  // matches your folder
         }
     }
 }
