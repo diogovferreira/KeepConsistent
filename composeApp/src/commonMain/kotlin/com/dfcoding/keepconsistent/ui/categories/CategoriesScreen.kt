@@ -1,17 +1,17 @@
-package com.dfcoding.keepconsistent.ui.profile
+package com.dfcoding.keepconsistent.ui.categories
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 
-class ProfileScreen: Screen {
+class CategoriesScreen: Screen {
     @Composable
     override fun Content() {
-        ProfileScreenStateless()
+        CategoriesScreenStateless()
     }
 }
 
 @Composable
-fun ProfileScreenStateless() {
-    Text("Profile")
+fun CategoriesScreenStateless() {
+    Text("Categories")
 }
