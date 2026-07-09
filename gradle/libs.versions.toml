@@ -26,6 +26,7 @@ dateTimeKmp = "0.5.0"
 sqldelight = "2.0.2"
 
 ktor = "3.0.1"
+supabase = "3.1.0"   # check github.com/supabase-community/supabase-kt/releases for the latest
 
 
 [libraries]
@@ -79,6 +80,11 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+
+supabase-bom = { module = "io.github.jan-tennert.supabase:bom", version.ref = "supabase" }
+supabase-auth = { module = "io.github.jan-tennert.supabase:auth-kt" }
+supabase-compose-auth = { module = "io.github.jan-tennert.supabase:compose-auth" }
+supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt" }
 
 
 androidx-splashscreen = { module = "androidx.core:core-splashscreen", version = "1.0.1" }

@@ -1,5 +1,14 @@
 package com.dfcoding.modelrepocompose.di
 
+import com.dfcoding.keepconsistent.data.auth.SupabaseConfig
+import com.dfcoding.keepconsistent.data.repository.AuthRepository
+import com.dfcoding.keepconsistent.data.repository.AuthRepositoryImpl
+import com.dfcoding.keepconsistent.ui.login.LoginViewModel
+import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.compose.auth.ComposeAuth
+import io.github.jan.supabase.compose.auth.googleNativeLogin
+import io.github.jan.supabase.createSupabaseClient
+import io.github.jan.supabase.postgrest.Postgrest
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -8,7 +17,7 @@ expect val platformModule: Module
 
 //For databases and repositories
 val dataModule = module {
-
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
 }
 
 
@@ -19,12 +28,23 @@ val useCasesModule = module {
 
 
 val viewModelModule = module {
-
+    factory { LoginViewModel(get()) }
 
 }
 
 val networkModule = module {
-
+    single {
+        createSupabaseClient(
+            supabaseUrl = SupabaseConfig.URL,
+            supabaseKey = SupabaseConfig.ANON_KEY
+        ) {
+            install(Auth)
+            install(ComposeAuth) {
+                googleNativeLogin(serverClientId = SupabaseConfig.GOOGLE_WEB_CLIENT_ID)
+            }
+            install(Postgrest)
+        }
+    }
 }
 
-val appModules = listOf(dataModule, viewModelModule,networkModule, useCasesModule)
+val appModules = listOf(dataModule, viewModelModule, networkModule, useCasesModule)
