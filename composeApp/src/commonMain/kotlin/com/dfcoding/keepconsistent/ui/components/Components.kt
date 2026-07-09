@@ -28,11 +28,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.theme.KeepConsistentTheme
+import com.theme.PoppinsFontFamily
 import modelrepocompose.composeapp.generated.resources.Res
 import modelrepocompose.composeapp.generated.resources.ic_pen
 import org.jetbrains.compose.resources.DrawableResource
@@ -82,7 +85,9 @@ fun AppTextField(
         label?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.titleMedium,
+                fontFamily = PoppinsFontFamily(),
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
         }
@@ -93,7 +98,7 @@ fun AppTextField(
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(placeholder) },
             singleLine = true,
-            shape = RoundedCornerShape(24.dp),
+            shape = RoundedCornerShape(14.dp),
             leadingIcon = leadingIcon,
             trailingIcon = trailingIcon ?: if (isPassword) {
                 {

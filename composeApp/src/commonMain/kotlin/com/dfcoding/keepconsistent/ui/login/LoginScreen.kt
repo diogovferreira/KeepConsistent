@@ -1,10 +1,48 @@
 package com.dfcoding.keepconsistent.ui.login
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import io.ktor.websocket.Frame
+import com.dfcoding.keepconsistent.ui.components.AppTextField
+import com.dfcoding.keepconsistent.ui.components.ButtonComponent
+import com.theme.KeepConsistentTheme
+import com.theme.PoppinsFontFamily
+import modelrepocompose.composeapp.generated.resources.Res
+import modelrepocompose.composeapp.generated.resources.app_name
+import modelrepocompose.composeapp.generated.resources.ic_app
+import modelrepocompose.composeapp.generated.resources.ic_google_login
+import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
-class LoginScreen: Screen {
+class LoginScreen : Screen {
     @Composable
     override fun Content() {
         LoginScreenStateless()
@@ -12,6 +50,127 @@ class LoginScreen: Screen {
 }
 
 @Composable
-fun LoginScreenStateless(){
-    Frame.Text("Login")
+fun LoginScreenStateless() {
+
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
+            .navigationBarsPadding().padding(top = 100.dp),
+        contentAlignment = Alignment.TopCenter
+    ) {
+        Column(
+            modifier = Modifier.padding(bottom = 24.dp).verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.wrapContentSize(),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    modifier = Modifier.size(28.dp),
+                    painter = painterResource(Res.drawable.ic_app),
+                    contentDescription = "App icon",
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text = stringResource(Res.string.app_name),
+                    fontFamily = PoppinsFontFamily(),
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 24.sp
+                )
+            }
+
+            Text(
+                modifier = Modifier.padding(top = 28.dp),
+                text = "Hello Welcome back!",
+                fontFamily = PoppinsFontFamily(),
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontSize = 24.sp
+            )
+            Text(
+                modifier = Modifier.padding(top = 28.dp),
+                text = "Sign in to continue",
+                fontFamily = PoppinsFontFamily(),
+                fontWeight = FontWeight.Normal,
+                color = MaterialTheme.colorScheme.outline,
+                fontSize = 16.sp
+            )
+
+            Box(
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(20.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(MaterialTheme.colorScheme.onPrimary)
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    AppTextField(placeholder = "Email", value = email, onValueChange = {}, label = "Email")
+                    AppTextField(
+                        placeholder = "Password",
+                        value = password,
+                        onValueChange = {},
+                        label = "Password",
+                        isPassword = true
+                    )
+
+                    Text(
+                        "Forgot Password?",
+                        fontFamily = PoppinsFontFamily(),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.align(Alignment.End)
+                    )
+                    ButtonComponent(text = "Login", onClick = {})
+                }
+            }
+
+            Text(
+                modifier = Modifier.padding(bottom = 14.dp),
+                text = "Or Login with",
+                fontFamily = PoppinsFontFamily(),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            Image(
+                painter = painterResource(Res.drawable.ic_google_login),
+                contentDescription = "Google Login Icon"
+            )
+
+            Row(modifier = Modifier.padding(top = 18.dp)) {
+                Text(
+                    text = "Don't have an account?",
+                    fontFamily = PoppinsFontFamily(),
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.outline,
+                    fontSize = 14.sp
+                )
+                Text(
+                    modifier = Modifier.padding(start = 4.dp).clickable { },
+                    text = "Sign up",
+                    fontFamily = PoppinsFontFamily(),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 14.sp
+                )
+            }
+
+
+        }
+    }
+}
+
+
+@Preview
+@Composable
+fun LoginScreenStatelessPreview() {
+    KeepConsistentTheme { LoginScreenStateless() }
 }
