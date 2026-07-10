@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,8 +31,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dfcoding.keepconsistent.ui.components.AppTextField
 import com.dfcoding.keepconsistent.ui.components.ButtonComponent
+import com.dfcoding.keepconsistent.ui.signup.SignUpScreen
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import modelrepocompose.composeapp.generated.resources.Res
@@ -45,12 +50,23 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 class LoginScreen : Screen {
     @Composable
     override fun Content() {
-        LoginScreenStateless()
+        val navigator = LocalNavigator.currentOrThrow
+        val viewModel = getScreenModel<LoginViewModel>()
+        val uiState by viewModel.uiState.collectAsState()
+
+        LoginScreenStateless(
+            uiState = uiState,
+            onSignUp = { navigator.push(SignUpScreen()) },
+            onLogin = { viewModel.signIn(it.first, it.second) })
     }
 }
 
 @Composable
-fun LoginScreenStateless() {
+fun LoginScreenStateless(
+    uiState: AuthUiState,
+    onSignUp: () -> Unit = {},
+    onLogin: (Pair<String, String>) -> Unit = {}
+) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -111,11 +127,16 @@ fun LoginScreenStateless() {
                     modifier = Modifier.padding(20.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
-                    AppTextField(placeholder = "Email", value = email, onValueChange = {}, label = "Email")
+                    AppTextField(
+                        placeholder = "Email",
+                        value = email,
+                        onValueChange = { email = it },
+                        label = "Email"
+                    )
                     AppTextField(
                         placeholder = "Password",
                         value = password,
-                        onValueChange = {},
+                        onValueChange = { password = it },
                         label = "Password",
                         isPassword = true
                     )
@@ -128,7 +149,12 @@ fun LoginScreenStateless() {
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.align(Alignment.End)
                     )
-                    ButtonComponent(text = "Login", onClick = {})
+                    ButtonComponent(text = "Login", onClick = {
+                        if (email.isNotEmpty() && password.isNotEmpty()) {
+                            onLogin(Pair(email, password))
+                        }
+
+                    })
                 }
             }
 
@@ -154,7 +180,7 @@ fun LoginScreenStateless() {
                     fontSize = 14.sp
                 )
                 Text(
-                    modifier = Modifier.padding(start = 4.dp).clickable { },
+                    modifier = Modifier.padding(start = 4.dp).clickable { onSignUp() },
                     text = "Sign up",
                     fontFamily = PoppinsFontFamily(),
                     fontWeight = FontWeight.Bold,
@@ -172,5 +198,5 @@ fun LoginScreenStateless() {
 @Preview
 @Composable
 fun LoginScreenStatelessPreview() {
-    KeepConsistentTheme { LoginScreenStateless() }
+    KeepConsistentTheme { LoginScreenStateless(AuthUiState.Idle, onSignUp = {}, onLogin = {}) }
 }

@@ -14,17 +14,14 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,12 +36,10 @@ import kotlinx.coroutines.launch
 import modelrepocompose.composeapp.generated.resources.Res
 import modelrepocompose.composeapp.generated.resources.app_name
 import modelrepocompose.composeapp.generated.resources.ic_app
-import modelrepocompose.composeapp.generated.resources.ic_onboard
 import modelrepocompose.composeapp.generated.resources.ic_onboard_one
 import modelrepocompose.composeapp.generated.resources.ic_pen
-import modelrepocompose.composeapp.generated.resources.poppins_semiBold
+import modelrepocompose.composeapp.generated.resources.ic_profile
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -191,8 +186,8 @@ fun OnBoardingScreenTwo() {
             maxLines = 2
         )
         FeatureItem("Assign Tasks", "Split chores and habits with your group, or keep them for yourself.", Res.drawable.ic_pen)
-        FeatureItem("Never Forget", "Get reminded before a task is due, so nothing slips.", Res.drawable.ic_pen)
-        FeatureItem("Assign Tasks", "Track your consistency over time, together.", Res.drawable.ic_pen)
+        FeatureItem("Never Forget", "Get reminded before a task is due, so nothing slips.", Res.drawable.ic_app)
+        FeatureItem("Build Streaks", "Track your consistency over time, together.", Res.drawable.ic_profile)
 
 
 

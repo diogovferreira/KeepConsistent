@@ -78,6 +78,7 @@ fun AppTextField(
     trailingIcon: (@Composable () -> Unit)? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    isError: Boolean = false,
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -112,6 +113,7 @@ fun AppTextField(
             } else null,
             visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = if (isPassword) keyboardOptions.copy(keyboardType = KeyboardType.Password) else keyboardOptions,
+            isError = isError,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outline,
@@ -119,8 +121,14 @@ fun AppTextField(
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                errorBorderColor = MaterialTheme.colorScheme.error,
+                errorContainerColor = MaterialTheme.colorScheme.errorContainer,
+                errorCursorColor = MaterialTheme.colorScheme.error,
+                errorLabelColor = MaterialTheme.colorScheme.error,
             )
         )
+
+
     }
 }
 

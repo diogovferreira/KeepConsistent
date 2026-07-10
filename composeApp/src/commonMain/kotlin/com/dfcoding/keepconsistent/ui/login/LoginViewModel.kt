@@ -41,19 +41,6 @@ class LoginViewModel(val authRepository: AuthRepository) : ScreenModel {
         }
     }
 
-    fun signUp(email: String, password: String) {
-        screenModelScope.launch {
-            _uiState.value = AuthUiState.Loading
-            authRepository.signUpWithEmail(email, password)
-                .onSuccess {
-                    _uiState.value = AuthUiState.Success
-                }
-                .onFailure {
-                    _uiState.value = AuthUiState.Error(it.message ?: "Unknown error")
-                }
-        }
-    }
-
     fun signOut() {
         screenModelScope.launch {
             authRepository.signOut()
