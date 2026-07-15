@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,13 +31,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dfcoding.keepconsistent.ui.components.AppTextField
 import com.dfcoding.keepconsistent.ui.components.ButtonComponent
+import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
+import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.ui.signup.SignUpScreen
+import com.dfcoding.keepconsistent.util.isValidEmail
+import com.dfcoding.keepconsistent.navigation.RootScreen
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import modelrepocompose.composeapp.generated.resources.Res
@@ -57,7 +63,9 @@ class LoginScreen : Screen {
         LoginScreenStateless(
             uiState = uiState,
             onSignUp = { navigator.push(SignUpScreen()) },
-            onLogin = { viewModel.signIn(it.first, it.second) })
+            onLogin = { viewModel.signIn(it.first, it.second) },
+            onDismissError = { viewModel.resetState() },
+            onLoginSuccess = { navigator.replaceAll(RootScreen()) })
     }
 }
 
@@ -65,11 +73,15 @@ class LoginScreen : Screen {
 fun LoginScreenStateless(
     uiState: AuthUiState,
     onSignUp: () -> Unit = {},
-    onLogin: (Pair<String, String>) -> Unit = {}
+    onLogin: (Pair<String, String>) -> Unit = {},
+    onDismissError: () -> Unit = {},
+    onLoginSuccess: () -> Unit = {}
 ) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val isValidEmail = email.isNotEmpty() && isValidEmail(email)
 
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
@@ -150,7 +162,7 @@ fun LoginScreenStateless(
                         modifier = Modifier.align(Alignment.End)
                     )
                     ButtonComponent(text = "Login", onClick = {
-                        if (email.isNotEmpty() && password.isNotEmpty()) {
+                        if (isValidEmail && password.isNotEmpty()) {
                             onLogin(Pair(email, password))
                         }
 
@@ -190,6 +202,29 @@ fun LoginScreenStateless(
             }
 
 
+        }
+
+        LaunchedEffect(uiState) {
+            if (uiState is AuthUiState.Success) {
+                onLoginSuccess()
+            }
+        }
+
+        when(uiState){
+            is AuthUiState.Error -> {
+                Dialog(onDismissRequest = onDismissError) {
+                    InfoDisplayComponent(
+                        topText = "Something went wrong",
+                        bottomText = uiState.message,
+                        buttonText = "Try again",
+                        buttonAction = onDismissError,
+                        isError = true
+                    )
+                }
+            }
+            AuthUiState.Idle -> {}
+            AuthUiState.Loading -> LoadingComponent()
+            else ->{}
         }
     }
 }
