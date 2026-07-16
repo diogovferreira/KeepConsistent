@@ -45,13 +45,18 @@ import com.dfcoding.keepconsistent.util.isValidEmail
 import com.dfcoding.keepconsistent.navigation.RootScreen
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
-import modelrepocompose.composeapp.generated.resources.Res
-import modelrepocompose.composeapp.generated.resources.app_name
-import modelrepocompose.composeapp.generated.resources.ic_app
-import modelrepocompose.composeapp.generated.resources.ic_google_login
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.compose.auth.composable.NativeSignInResult
+import io.github.jan.supabase.compose.auth.composable.rememberSignInWithGoogle
+import io.github.jan.supabase.compose.auth.composeAuth
+import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.app_name
+import keepconsistent.composeapp.generated.resources.ic_app
+import keepconsistent.composeapp.generated.resources.ic_google_login
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 class LoginScreen : Screen {
     @Composable
@@ -59,13 +64,27 @@ class LoginScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel = getScreenModel<LoginViewModel>()
         val uiState by viewModel.uiState.collectAsState()
+        val supabaseClient = koinInject<SupabaseClient>()
+
+        val googleAuthState = supabaseClient.composeAuth.rememberSignInWithGoogle(
+            onResult = { result ->
+                when(result){
+                    NativeSignInResult.ClosedByUser -> viewModel.resetState()
+                    is NativeSignInResult.Error -> viewModel.setError(result.message)
+                    is NativeSignInResult.NetworkError -> viewModel.setError(result.message)
+                    NativeSignInResult.Success -> viewModel.setSuccess()
+                }
+            }
+        )
 
         LoginScreenStateless(
             uiState = uiState,
             onSignUp = { navigator.push(SignUpScreen()) },
             onLogin = { viewModel.signIn(it.first, it.second) },
             onDismissError = { viewModel.resetState() },
-            onLoginSuccess = { navigator.replaceAll(RootScreen()) })
+            onLoginSuccess = { navigator.replaceAll(RootScreen()) },
+            onGoogleLogin = { viewModel.setLoading()
+                googleAuthState.startFlow() })
     }
 }
 
@@ -75,7 +94,8 @@ fun LoginScreenStateless(
     onSignUp: () -> Unit = {},
     onLogin: (Pair<String, String>) -> Unit = {},
     onDismissError: () -> Unit = {},
-    onLoginSuccess: () -> Unit = {}
+    onLoginSuccess: () -> Unit = {},
+    onGoogleLogin: () -> Unit = {}
 ) {
 
     var email by remember { mutableStateOf("") }
@@ -179,6 +199,7 @@ fun LoginScreenStateless(
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Image(
+                modifier = Modifier.clickable { onGoogleLogin() },
                 painter = painterResource(Res.drawable.ic_google_login),
                 contentDescription = "Google Login Icon"
             )

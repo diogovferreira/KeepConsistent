@@ -11,7 +11,7 @@ androidx-lifecycle = "2.9.4"
 androidx-testExt = "1.3.0"
 composeMultiplatform = "1.7.0"
 junit = "4.13.2"
-kotlin = "2.2.20"
+kotlin = "2.2.21"
 
 coroutines = "1.9.0"
 coil = "3.0.0-rc02" # latest stable as of now, works with Kotlin 2.2.0 and Compose 1.7.0
@@ -26,7 +26,7 @@ dateTimeKmp = "0.5.0"
 sqldelight = "2.0.2"
 
 ktor = "3.0.1"
-supabase = "3.1.0"   # check github.com/supabase-community/supabase-kt/releases for the latest
+supabase = "3.2.6"   # check github.com/supabase-community/supabase-kt/releases for the latest
 
 
 [libraries]

@@ -1,8 +1,10 @@
-package com.dfcoding.modelrepocompose.di
+package com.dfcoding.keepconsistent.di
 
 import com.dfcoding.keepconsistent.data.auth.SupabaseConfig
 import com.dfcoding.keepconsistent.data.repository.AuthRepository
 import com.dfcoding.keepconsistent.data.repository.AuthRepositoryImpl
+import com.dfcoding.keepconsistent.data.repository.OnBoardingRepository
+import com.dfcoding.keepconsistent.data.repository.OnBoardingRepositoryImpl
 import com.dfcoding.keepconsistent.ui.login.LoginViewModel
 import com.dfcoding.keepconsistent.ui.signup.SignUpViewModel
 import io.github.jan.supabase.auth.Auth
@@ -19,6 +21,7 @@ expect val platformModule: Module
 //For databases and repositories
 val dataModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<OnBoardingRepository> { OnBoardingRepositoryImpl(get()) }
 }
 
 

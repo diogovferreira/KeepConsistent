@@ -47,6 +47,18 @@ class LoginViewModel(val authRepository: AuthRepository) : ScreenModel {
         }
     }
 
+    fun setLoading(){
+        _uiState.value = AuthUiState.Loading
+    }
+
+    fun setSuccess(){
+        _uiState.value = AuthUiState.Success
+    }
+
+    fun setError(message: String){
+        _uiState.value = AuthUiState.Error(message)
+    }
+
     fun resetState() {
         _uiState.value = AuthUiState.Idle
     }

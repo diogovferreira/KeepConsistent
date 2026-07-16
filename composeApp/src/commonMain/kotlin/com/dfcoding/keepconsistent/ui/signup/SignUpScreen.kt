@@ -39,8 +39,8 @@ import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.util.isValidEmail
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
-import modelrepocompose.composeapp.generated.resources.Res
-import modelrepocompose.composeapp.generated.resources.ic_arrow_back
+import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.ic_arrow_back
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

@@ -1,8 +1,15 @@
-package com.dfcoding.modelrepocompose.di
+package com.dfcoding.keepconsistent.di
 
-import org.koin.core.module.Module
+import android.content.Context
+import com.russhwolf.settings.SharedPreferencesSettings
+import com.russhwolf.settings.Settings
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-actual val platformModule: Module = module {
-   // single<SqlDriver> { DriverFactory(androidContext()).createDriver() }
+actual val platformModule = module {
+    single<Settings> {
+        SharedPreferencesSettings(
+            androidContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        )
+    }
 }

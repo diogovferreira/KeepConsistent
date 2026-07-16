@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
-import modelrepocompose.composeapp.generated.resources.Res
-import modelrepocompose.composeapp.generated.resources.ic_check_circle
-import modelrepocompose.composeapp.generated.resources.ic_circle_error
+import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.ic_check_circle
+import keepconsistent.composeapp.generated.resources.ic_circle_error
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

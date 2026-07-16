@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "3F513D2D13EDF126D23E8ABF"
-               BuildableName = "ModelRepoCompose.app"
+               BuildableName = "KeepConsistent.app"
                BlueprintName = "iosApp"
                ReferencedContainer = "container:iosApp.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "3F513D2D13EDF126D23E8ABF"
-            BuildableName = "ModelRepoCompose.app"
+            BuildableName = "KeepConsistent.app"
             BlueprintName = "iosApp"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>

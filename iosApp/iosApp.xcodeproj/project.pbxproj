@@ -6,12 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		63E71D043008F9B7005CE7FA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6334312A3008F50900246539 /* libsqlite3.tbd */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		94C2E061D06FA4F90706BC27 /* ModelRepoCompose.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelRepoCompose.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6334312A3008F50900246539 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		94C2E061D06FA4F90706BC27 /* KeepConsistent.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeepConsistent.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		54609B3824918A7374ADB157 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		54609B3824918A7374ADB157 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -29,7 +34,7 @@
 		62D000E3F7B7A22AF75BFA37 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				54609B3824918A7374ADB157 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				54609B3824918A7374ADB157 /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -41,17 +46,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63E71D043008F9B7005CE7FA /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		633431293008F50900246539 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6334312A3008F50900246539 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		BD3D39C0F4A8017ABBA2DE96 = {
 			isa = PBXGroup;
 			children = (
 				38F64FF0922E7B81C96CA48F /* Configuration */,
 				62D000E3F7B7A22AF75BFA37 /* iosApp */,
+				633431293008F50900246539 /* Frameworks */,
 				C59E70A61BB2F0416FFB5983 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,7 +74,7 @@
 		C59E70A61BB2F0416FFB5983 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				94C2E061D06FA4F90706BC27 /* ModelRepoCompose.app */,
+				94C2E061D06FA4F90706BC27 /* KeepConsistent.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,7 +102,7 @@
 			packageProductDependencies = (
 			);
 			productName = iosApp;
-			productReference = 94C2E061D06FA4F90706BC27 /* ModelRepoCompose.app */;
+			productReference = 94C2E061D06FA4F90706BC27 /* KeepConsistent.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -114,6 +129,8 @@
 			);
 			mainGroup = BD3D39C0F4A8017ABBA2DE96;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = C59E70A61BB2F0416FFB5983 /* Products */;
 			projectDirPath = "";

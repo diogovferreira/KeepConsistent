@@ -1,8 +1,8 @@
 package com.dfcoding.modelrepocompose
 
 import android.app.Application
-import com.dfcoding.modelrepocompose.di.appModules
-import com.dfcoding.modelrepocompose.di.platformModule
+import com.dfcoding.keepconsistent.di.appModules
+import com.dfcoding.keepconsistent.di.platformModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.component.KoinComponent

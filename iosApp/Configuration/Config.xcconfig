@@ -1,7 +1,7 @@
 TEAM_ID=
 
-PRODUCT_NAME=ModelRepoCompose
-PRODUCT_BUNDLE_IDENTIFIER=com.dfcoding.modelrepocompose
+PRODUCT_NAME=KeepConsistent
+PRODUCT_BUNDLE_IDENTIFIER=com.dfcoding.keepconsistent
 
 CURRENT_PROJECT_VERSION=1
 MARKETING_VERSION=1.0

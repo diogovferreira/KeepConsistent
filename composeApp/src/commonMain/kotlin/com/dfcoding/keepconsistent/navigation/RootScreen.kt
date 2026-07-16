@@ -16,11 +16,11 @@ import com.dfcoding.keepconsistent.ui.components.BottomNavItem
 import com.dfcoding.keepconsistent.ui.home.HomeScreen
 import com.dfcoding.keepconsistent.ui.profile.ProfileScreen
 import com.dfcoding.keepconsistent.ui.schedule.ScheduleScreen
-import modelrepocompose.composeapp.generated.resources.Res
-import modelrepocompose.composeapp.generated.resources.ic_calendar
-import modelrepocompose.composeapp.generated.resources.ic_home
-import modelrepocompose.composeapp.generated.resources.ic_messages
-import modelrepocompose.composeapp.generated.resources.ic_profile
+import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.ic_calendar
+import keepconsistent.composeapp.generated.resources.ic_home
+import keepconsistent.composeapp.generated.resources.ic_messages
+import keepconsistent.composeapp.generated.resources.ic_profile
 
 class RootScreen : Screen {
     @Composable

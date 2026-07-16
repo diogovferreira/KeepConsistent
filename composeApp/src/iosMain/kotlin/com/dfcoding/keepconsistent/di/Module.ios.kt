@@ -1,12 +1,10 @@
-package com.dfcoding.modelrepocompose.di
+package com.dfcoding.keepconsistent.di
 
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.darwin.Darwin
-import org.koin.core.module.Module
+import com.russhwolf.settings.NSUserDefaultsSettings
+import com.russhwolf.settings.Settings
 import org.koin.dsl.module
+import platform.Foundation.NSUserDefaults
 
-actual val platformModule: Module = module {
-
-    single<HttpClientEngine> { Darwin.create() }
-    // singleOf(::getPortfolioDatabaseBuilder).bind<RoomDatabase.Builder<PortfolioDatabase>>()
+actual val platformModule = module {
+    single<Settings> { NSUserDefaultsSettings(NSUserDefaults.standardUserDefaults) }
 }

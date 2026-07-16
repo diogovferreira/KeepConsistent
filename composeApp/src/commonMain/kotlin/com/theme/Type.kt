@@ -7,12 +7,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import modelrepocompose.composeapp.generated.resources.Res
-import modelrepocompose.composeapp.generated.resources.poppins_bold
-import modelrepocompose.composeapp.generated.resources.poppins_light
-import modelrepocompose.composeapp.generated.resources.poppins_medium
-import modelrepocompose.composeapp.generated.resources.poppins_regular
-import modelrepocompose.composeapp.generated.resources.poppins_semiBold
+import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.poppins_bold
+import keepconsistent.composeapp.generated.resources.poppins_light
+import keepconsistent.composeapp.generated.resources.poppins_medium
+import keepconsistent.composeapp.generated.resources.poppins_regular
+import keepconsistent.composeapp.generated.resources.poppins_semiBold
 import org.jetbrains.compose.resources.Font
 
 @Composable

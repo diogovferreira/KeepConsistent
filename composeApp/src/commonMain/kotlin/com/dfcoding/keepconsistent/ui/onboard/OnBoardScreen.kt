@@ -28,28 +28,33 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.dfcoding.keepconsistent.data.repository.OnBoardingRepository
 import com.dfcoding.keepconsistent.ui.components.ButtonComponent
 import com.dfcoding.keepconsistent.ui.login.LoginScreen
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import kotlinx.coroutines.launch
-import modelrepocompose.composeapp.generated.resources.Res
-import modelrepocompose.composeapp.generated.resources.app_name
-import modelrepocompose.composeapp.generated.resources.ic_app
-import modelrepocompose.composeapp.generated.resources.ic_onboard_one
-import modelrepocompose.composeapp.generated.resources.ic_pen
-import modelrepocompose.composeapp.generated.resources.ic_profile
+import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.app_name
+import keepconsistent.composeapp.generated.resources.ic_app
+import keepconsistent.composeapp.generated.resources.ic_onboard_one
+import keepconsistent.composeapp.generated.resources.ic_pen
+import keepconsistent.composeapp.generated.resources.ic_profile
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 class OnBoardScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val onBoardingRepository = koinInject<OnBoardingRepository>()
 
-        OnBoardScreenStateless(onFinished = { navigator.push(LoginScreen()) })
+        OnBoardScreenStateless(onFinished = {
+            onBoardingRepository.markOnboardingSeen()
+            navigator.push(LoginScreen()) })
     }
 }
 
