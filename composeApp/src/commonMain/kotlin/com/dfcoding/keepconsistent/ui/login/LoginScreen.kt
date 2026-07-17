@@ -43,6 +43,7 @@ import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.ui.signup.SignUpScreen
 import com.dfcoding.keepconsistent.util.isValidEmail
 import com.dfcoding.keepconsistent.navigation.RootScreen
+import com.dfcoding.keepconsistent.ui.forgotpassword.ForgotPasswordScreen
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import io.github.jan.supabase.SupabaseClient
@@ -84,7 +85,8 @@ class LoginScreen : Screen {
             onDismissError = { viewModel.resetState() },
             onLoginSuccess = { navigator.replaceAll(RootScreen()) },
             onGoogleLogin = { viewModel.setLoading()
-                googleAuthState.startFlow() })
+                googleAuthState.startFlow() },
+            onForgotPassword = { navigator.push(ForgotPasswordScreen()) })
     }
 }
 
@@ -95,7 +97,8 @@ fun LoginScreenStateless(
     onLogin: (Pair<String, String>) -> Unit = {},
     onDismissError: () -> Unit = {},
     onLoginSuccess: () -> Unit = {},
-    onGoogleLogin: () -> Unit = {}
+    onGoogleLogin: () -> Unit = {},
+    onForgotPassword: () -> Unit = {}
 ) {
 
     var email by remember { mutableStateOf("") }
@@ -179,7 +182,9 @@ fun LoginScreenStateless(
                         fontWeight = FontWeight.Medium,
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.align(Alignment.End)
+                        modifier = Modifier.align(Alignment.End).clickable{
+                            onForgotPassword()
+                        }
                     )
                     ButtonComponent(text = "Login", onClick = {
                         if (isValidEmail && password.isNotEmpty()) {

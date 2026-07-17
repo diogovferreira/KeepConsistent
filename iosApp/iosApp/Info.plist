@@ -6,3 +6,13 @@
 	<true/>
 </dict>
 </plist>
+
+<key>CFBundleURLTypes</key>
+<array>
+<dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+        <string>keepconsistent</string>
+    </array>
+</dict>
+</array>

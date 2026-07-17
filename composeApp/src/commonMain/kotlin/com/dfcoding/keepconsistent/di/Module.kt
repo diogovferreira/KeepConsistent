@@ -5,8 +5,10 @@ import com.dfcoding.keepconsistent.data.repository.AuthRepository
 import com.dfcoding.keepconsistent.data.repository.AuthRepositoryImpl
 import com.dfcoding.keepconsistent.data.repository.OnBoardingRepository
 import com.dfcoding.keepconsistent.data.repository.OnBoardingRepositoryImpl
+import com.dfcoding.keepconsistent.ui.forgotpassword.ForgotPasswordScreenViewModel
 import com.dfcoding.keepconsistent.ui.login.LoginViewModel
 import com.dfcoding.keepconsistent.ui.signup.SignUpViewModel
+import com.dfcoding.keepconsistent.ui.updatepassword.UpdatePasswordScreenViewModel
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.compose.auth.ComposeAuth
 import io.github.jan.supabase.compose.auth.googleNativeLogin
@@ -34,6 +36,8 @@ val useCasesModule = module {
 val viewModelModule = module {
     factory { LoginViewModel(get()) }
     factory { SignUpViewModel(get()) }
+    factory { ForgotPasswordScreenViewModel(get()) }
+    factory { UpdatePasswordScreenViewModel(get()) }
 
 }
 
@@ -43,7 +47,10 @@ val networkModule = module {
             supabaseUrl = SupabaseConfig.URL,
             supabaseKey = SupabaseConfig.ANON_KEY
         ) {
-            install(Auth)
+            install(Auth) {
+                host = "auth-callback"
+                scheme = "keepconsistent"
+            }
             install(ComposeAuth) {
                 googleNativeLogin(serverClientId = SupabaseConfig.GOOGLE_WEB_CLIENT_ID)
             }

@@ -12,8 +12,9 @@ sealed interface SessionState{
 interface AuthRepository {
     val sessionState: Flow<SessionState>
     val currentUser: Flow<AuthUser?>
-
     suspend fun signUpWithEmail(email: String, password: String): Result<Unit>
     suspend fun signInWithEmail(email: String, password: String): Result<Unit>
     suspend fun signOut(): Result<Unit>
+    suspend fun sendPasswordReset(email: String): Result<Unit>
+    suspend fun updatePassword(newPassword: String): Result<Unit>
 }

@@ -10,10 +10,12 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dfcoding.keepconsistent.data.repository.AuthRepository
 import com.dfcoding.keepconsistent.data.repository.OnBoardingRepository
 import com.dfcoding.keepconsistent.data.repository.SessionState
+import com.dfcoding.keepconsistent.deeplink.PasswordRecoveryState
 import com.dfcoding.keepconsistent.navigation.RootScreen
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.ui.login.LoginScreen
 import com.dfcoding.keepconsistent.ui.onboard.OnBoardScreen
+import com.dfcoding.keepconsistent.ui.updatepassword.UpdatePasswordScreen
 import org.koin.compose.koinInject
 
 class AppEntryScreen: Screen {
@@ -24,7 +26,14 @@ class AppEntryScreen: Screen {
         val onBoardingRepository = koinInject<OnBoardingRepository>()
         val sessionState by authRepository.sessionState.collectAsState(initial = SessionState.Loading)
 
-        LaunchedEffect(sessionState){
+        val isPasswordRecovery by PasswordRecoveryState.isPasswordRecovery.collectAsState()
+
+
+        LaunchedEffect(sessionState, isPasswordRecovery){
+            if (isPasswordRecovery) {
+                navigator.replaceAll(UpdatePasswordScreen())
+                return@LaunchedEffect
+            }
             when(val state = sessionState){
                 SessionState.Loading -> {}
                 is SessionState.LoggedIn -> navigator.replaceAll(RootScreen())

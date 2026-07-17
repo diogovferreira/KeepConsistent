@@ -6,7 +6,6 @@ import com.dfcoding.keepconsistent.ui.AppEntryScreen
 import com.dfcoding.keepconsistent.di.appModules
 import com.dfcoding.keepconsistent.di.platformModule
 import com.theme.KeepConsistentTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 import org.koin.dsl.KoinAppDeclaration
 
@@ -16,6 +15,7 @@ fun App(additionalKoinConfig: KoinAppDeclaration = {}) {
         additionalKoinConfig()
         modules(appModules + platformModule)
     }) {
+        HandleAuthDeepLink()
         KeepConsistentTheme {
             Navigator(AppEntryScreen())
         }

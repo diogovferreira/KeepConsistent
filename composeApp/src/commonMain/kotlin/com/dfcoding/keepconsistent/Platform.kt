@@ -1,7 +1,13 @@
-package com.dfcoding.modelrepocompose
+package com.dfcoding.keepconsistent
+
+import androidx.compose.runtime.Composable
 
 interface Platform {
     val name: String
 }
 
 expect fun getPlatform(): Platform
+
+
+@Composable
+expect fun HandleAuthDeepLink()
