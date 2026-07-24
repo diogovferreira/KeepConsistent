@@ -42,7 +42,7 @@ fun ButtonComponent(
     text: String,
     icon: DrawableResource? = null,
     onClick: () -> Unit,
-    isActive: Boolean = true
+    isActive: Boolean = true,
 ) {
     Button(
         onClick = onClick,
