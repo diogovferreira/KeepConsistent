@@ -5,24 +5,23 @@ import kotlinx.datetime.DateTimePeriod
 data class TaskModel(
     val name: String,
     val description: String,
-    val type: TaskType,
-    val frequency: FrequencyType,
+    val type: Type,
+    val frequency: Frequency,
     val periodoOfTime: DateTimePeriod,
     val duration: DateTimePeriod,
     val categoryModel: CategoryModel
 )
 
 
-
-enum class TaskType {
-    Personal,
-    Work,
-    Break
+enum class Type {
+    Reminder,
+    Activity
 }
 
-enum class FrequencyType {
+enum class Frequency {
     Daily,
     Weekly,
-    Monthly
+    Monthly,
+    Custom
 }
 

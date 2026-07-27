@@ -1,4 +1,4 @@
-package com.dfcoding.keepconsistent.ui.onboard
+package com.dfcoding.keepconsistent.ui.login.onboard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

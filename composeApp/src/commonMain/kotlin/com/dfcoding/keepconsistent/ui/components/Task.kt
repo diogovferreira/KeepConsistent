@@ -21,14 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.models.CategoryModel
-import com.dfcoding.keepconsistent.models.FrequencyType
+import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
-import com.dfcoding.keepconsistent.models.TaskType
+import com.dfcoding.keepconsistent.models.Type
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import keepconsistent.composeapp.generated.resources.Res
 import keepconsistent.composeapp.generated.resources.ic_fire
-import keepconsistent.composeapp.generated.resources.ic_megaphone
 import kotlinx.datetime.DateTimePeriod
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -137,8 +136,8 @@ fun TaskComponentPreview() {
             task = TaskModel(
                 name = "Learn Piano",
                 description = "Description",
-                type = TaskType.Personal,
-                frequency = FrequencyType.Daily,
+                type = Type.Reminder,
+                frequency = Frequency.Daily,
                 periodoOfTime = DateTimePeriod(days = 1),
                 duration = DateTimePeriod(days = 1),
                 categoryModel = CategoryModel(CategoriesType.Personal)

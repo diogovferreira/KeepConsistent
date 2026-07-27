@@ -1,4 +1,4 @@
-package com.dfcoding.keepconsistent.ui.signup
+package com.dfcoding.keepconsistent.ui.login.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

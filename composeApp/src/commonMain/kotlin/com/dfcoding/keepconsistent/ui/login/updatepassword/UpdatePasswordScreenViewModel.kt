@@ -1,4 +1,4 @@
-package com.dfcoding.keepconsistent.ui.updatepassword
+package com.dfcoding.keepconsistent.ui.login.updatepassword
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

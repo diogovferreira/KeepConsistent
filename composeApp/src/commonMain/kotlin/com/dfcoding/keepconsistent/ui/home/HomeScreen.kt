@@ -32,7 +32,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.models.CategoryModel
 import com.dfcoding.keepconsistent.models.TaskModel
-import com.dfcoding.keepconsistent.ui.components.ButtonComponent
 import com.dfcoding.keepconsistent.ui.components.CategoryItem
 import com.dfcoding.keepconsistent.ui.components.DaySelector
 import com.dfcoding.keepconsistent.ui.components.TaskComponent
@@ -40,7 +39,6 @@ import com.dfcoding.keepconsistent.ui.components.dateRange
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import keepconsistent.composeapp.generated.resources.Res
-import keepconsistent.composeapp.generated.resources.ic_add_square
 import keepconsistent.composeapp.generated.resources.ic_arrow_back
 import keepconsistent.composeapp.generated.resources.ic_empty_data
 import keepconsistent.composeapp.generated.resources.ic_megaphone
@@ -210,8 +208,8 @@ fun HomeScreenStatelessPreview() {
                 TaskModel(
                     name = "Learn Piano",
                     description = "Description",
-                    type = com.dfcoding.keepconsistent.models.TaskType.Personal,
-                    frequency = com.dfcoding.keepconsistent.models.FrequencyType.Daily,
+                    type = com.dfcoding.keepconsistent.models.Type.Reminder,
+                    frequency = com.dfcoding.keepconsistent.models.Frequency.Daily,
                     periodoOfTime = kotlinx.datetime.DateTimePeriod(days = 1),
                     duration = kotlinx.datetime.DateTimePeriod(days = 1),
                     categoryModel = CategoryModel(CategoriesType.Personal)
@@ -219,8 +217,8 @@ fun HomeScreenStatelessPreview() {
                 TaskModel(
                     name = "Learn Piano",
                     description = "Description",
-                    type = com.dfcoding.keepconsistent.models.TaskType.Personal,
-                    frequency = com.dfcoding.keepconsistent.models.FrequencyType.Daily,
+                    type = com.dfcoding.keepconsistent.models.Type.Activity,
+                    frequency = com.dfcoding.keepconsistent.models.Frequency.Daily,
                     periodoOfTime = kotlinx.datetime.DateTimePeriod(days = 1),
                     duration = kotlinx.datetime.DateTimePeriod(days = 1),
                     categoryModel = CategoryModel(CategoriesType.Personal)
@@ -228,8 +226,8 @@ fun HomeScreenStatelessPreview() {
                 TaskModel(
                     name = "Learn Piano",
                     description = "Description",
-                    type = com.dfcoding.keepconsistent.models.TaskType.Personal,
-                    frequency = com.dfcoding.keepconsistent.models.FrequencyType.Daily,
+                    type = com.dfcoding.keepconsistent.models.Type.Reminder,
+                    frequency = com.dfcoding.keepconsistent.models.Frequency.Daily,
                     periodoOfTime = kotlinx.datetime.DateTimePeriod(days = 1),
                     duration = kotlinx.datetime.DateTimePeriod(days = 1),
                     categoryModel = CategoryModel(CategoriesType.Personal)

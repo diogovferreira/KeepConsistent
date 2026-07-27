@@ -10,6 +10,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.dfcoding.keepconsistent.ui.addtask.AddTaskScreen
 import com.dfcoding.keepconsistent.ui.categories.CategoriesScreen
 import com.dfcoding.keepconsistent.ui.components.AppBottomBar
 import com.dfcoding.keepconsistent.ui.components.BottomNavItem
@@ -26,6 +29,8 @@ class RootScreen : Screen {
     @Composable
     override fun Content() {
         var currentTab by remember { mutableStateOf("home") }
+        val navigator = LocalNavigator.currentOrThrow
+
 
         val homeScreen = remember { HomeScreen() }
         val scheduleScreen = remember { ScheduleScreen() }
@@ -49,7 +54,7 @@ class RootScreen : Screen {
                     items = tabs,
                     selectedIndex = tabs.indexOfFirst { it.label == currentTab }.coerceAtLeast(0),
                     onItemSelected = {index -> currentTab = tabs[index].label},
-                    onFabClick = { }
+                    onFabClick = { navigator.push(AddTaskScreen()) }
                 )
             }
         ){ paddingValues ->

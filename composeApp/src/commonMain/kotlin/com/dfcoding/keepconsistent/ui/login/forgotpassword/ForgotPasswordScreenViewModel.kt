@@ -1,4 +1,4 @@
-package com.dfcoding.keepconsistent.ui.forgotpassword
+package com.dfcoding.keepconsistent.ui.login.forgotpassword
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

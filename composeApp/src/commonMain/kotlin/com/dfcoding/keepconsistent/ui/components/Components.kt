@@ -1,5 +1,8 @@
 package com.dfcoding.keepconsistent.ui.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
+import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.ic_calendar
+import keepconsistent.composeapp.generated.resources.ic_clock
+import keepconsistent.composeapp.generated.resources.ic_megaphone
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -43,20 +51,25 @@ fun ButtonComponent(
     icon: DrawableResource? = null,
     onClick: () -> Unit,
     isActive: Boolean = true,
+    modifier: Modifier? = null
 ) {
     Button(
         onClick = onClick,
         enabled = isActive,
-        modifier = Modifier.fillMaxWidth().height(48.dp),
+        modifier = modifier ?: Modifier.fillMaxWidth().height(48.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
         )
     ) {
         icon?.let {
-            Icon(modifier = Modifier.size(24.dp), painter = painterResource(icon), contentDescription = null)
+            Icon(
+                modifier = Modifier.size(24.dp),
+                painter = painterResource(icon),
+                contentDescription = null
+            )
         }
-        Text(modifier = Modifier.padding(start = 10.dp),text = text)
+        Text(modifier = Modifier.padding(start = 10.dp), text = text)
 
     }
 }
@@ -73,9 +86,22 @@ fun AppTextField(
     leadingIcon: (@Composable () -> Unit)? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     isError: Boolean = false,
+    isCalendar: Boolean = false,
+    isTimePicker: Boolean = false,
+    onIconClick: () -> Unit = {},
+    readOnly: Boolean = false
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
+    val interactionSource = remember { MutableInteractionSource() }
+
+    LaunchedEffect(interactionSource) {
+        interactionSource.interactions.collect { interaction ->
+            if (interaction is PressInteraction.Release) {
+                onIconClick.invoke()
+            }
+        }
+    }
     Column(modifier = modifier) {
         label?.let {
             Text(
@@ -91,6 +117,8 @@ fun AppTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
+            interactionSource = interactionSource,
+            readOnly = readOnly,
             placeholder = { Text(placeholder) },
             singleLine = true,
             shape = RoundedCornerShape(14.dp),
@@ -104,6 +132,17 @@ fun AppTextField(
                         )
                     }
                 }
+            } else if (isCalendar || isTimePicker) {
+                {
+                    IconButton(onClick = { onIconClick() }) {
+                        Icon(
+                            painter = painterResource(if(isCalendar) Res.drawable.ic_calendar else Res.drawable.ic_clock),
+                            contentDescription = "Calendar",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+
             } else null,
             visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
             keyboardOptions = if (isPassword) keyboardOptions.copy(keyboardType = KeyboardType.Password) else keyboardOptions,
@@ -130,7 +169,13 @@ fun AppTextField(
 @Preview
 fun ButtonComponentPreview() {
     KeepConsistentTheme {
-      //  ButtonComponent("Preview", onClick = {}, icon = Res.drawable.ic_pen)
-        AppTextField("Password", onValueChange = {}, isPassword = true, placeholder = "Password", label = "Password")
+        //  ButtonComponent("Preview", onClick = {}, icon = Res.drawable.ic_pen)
+        AppTextField(
+            "Password",
+            onValueChange = {},
+            isPassword = true,
+            placeholder = "Password",
+            label = "Password"
+        )
     }
 }

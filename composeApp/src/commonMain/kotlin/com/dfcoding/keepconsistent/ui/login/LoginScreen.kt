@@ -40,10 +40,10 @@ import com.dfcoding.keepconsistent.ui.components.AppTextField
 import com.dfcoding.keepconsistent.ui.components.ButtonComponent
 import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
-import com.dfcoding.keepconsistent.ui.signup.SignUpScreen
+import com.dfcoding.keepconsistent.ui.login.signup.SignUpScreen
 import com.dfcoding.keepconsistent.util.isValidEmail
 import com.dfcoding.keepconsistent.navigation.RootScreen
-import com.dfcoding.keepconsistent.ui.forgotpassword.ForgotPasswordScreen
+import com.dfcoding.keepconsistent.ui.login.forgotpassword.ForgotPasswordScreen
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import io.github.jan.supabase.SupabaseClient

@@ -1,4 +1,4 @@
-package com.dfcoding.keepconsistent.ui.signup
+package com.dfcoding.keepconsistent.ui.login.signup
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

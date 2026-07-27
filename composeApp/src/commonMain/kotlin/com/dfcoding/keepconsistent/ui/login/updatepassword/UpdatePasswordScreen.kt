@@ -1,4 +1,4 @@
-package com.dfcoding.keepconsistent.ui.updatepassword
+package com.dfcoding.keepconsistent.ui.login.updatepassword
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

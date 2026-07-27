@@ -14,8 +14,8 @@ import com.dfcoding.keepconsistent.deeplink.PasswordRecoveryState
 import com.dfcoding.keepconsistent.navigation.RootScreen
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.ui.login.LoginScreen
-import com.dfcoding.keepconsistent.ui.onboard.OnBoardScreen
-import com.dfcoding.keepconsistent.ui.updatepassword.UpdatePasswordScreen
+import com.dfcoding.keepconsistent.ui.login.onboard.OnBoardScreen
+import com.dfcoding.keepconsistent.ui.login.updatepassword.UpdatePasswordScreen
 import org.koin.compose.koinInject
 
 class AppEntryScreen: Screen {
