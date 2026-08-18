@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,11 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.models.CategoryModel
+import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
 import com.dfcoding.keepconsistent.ui.components.CategoryItem
 import com.dfcoding.keepconsistent.ui.components.DaySelector
+import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
+import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.ui.components.TaskComponent
 import com.dfcoding.keepconsistent.ui.components.dateRange
 import com.theme.KeepConsistentTheme
@@ -42,13 +47,44 @@ import keepconsistent.composeapp.generated.resources.Res
 import keepconsistent.composeapp.generated.resources.ic_arrow_back
 import keepconsistent.composeapp.generated.resources.ic_empty_data
 import keepconsistent.composeapp.generated.resources.ic_megaphone
+import kotlinx.datetime.DateTimePeriod
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+// Also the screen opened by tapping a task-reminder notification — no login
+// gating here on purpose. That routing (deep link -> straight to HomeScreen,
+// bypassing LoginScreen) needs to be wired wherever the notification's
+// PendingIntent / Navigator root is set up, which isn't in this file.
 class HomeScreen : Screen {
     @Composable
     override fun Content() {
-        HomeScreenStateless(name = "", tasks = listOf(), image = "", categories = listOf())
+        val viewModel = getScreenModel<HomeScreenViewModel>()
+        val state by viewModel.state.collectAsState()
+
+        when (val currentState = state) {
+            HomeScreenState.Loading -> LoadingComponent()
+
+            is HomeScreenState.Error -> InfoDisplayComponent(
+                topText = "Something went wrong",
+                bottomText = currentState.message,
+                buttonText = "Try again",
+                buttonAction = { viewModel.loadTodayTasks() },
+                isError = true
+            )
+
+            is HomeScreenState.Success -> {
+                HomeScreenStateless(
+                    name = "",
+                    tasks = currentState.tasks,
+                    image = "",
+                    categories = currentState.tasks.map { it.categoryModel }
+                        .distinctBy { it.category },
+                    isTaskCompleted = { viewModel.isCompletedToday(it) },
+                    onToggleComplete = { viewModel.toggleComplete(it) },
+                    onDeleteTask = { viewModel.deleteTask(it) }
+                )
+            }
+        }
     }
 }
 
@@ -58,7 +94,10 @@ fun HomeScreenStateless(
     name: String,
     tasks: List<TaskModel>,
     image: String,
-    categories: List<CategoryModel>
+    categories: List<CategoryModel>,
+    isTaskCompleted: (TaskModel) -> Boolean = { false },
+    onToggleComplete: (TaskModel) -> Unit = {},
+    onDeleteTask: (TaskModel) -> Unit = {}
 ) {
     val categoriesListState = rememberLazyListState()
     var selectedDate by remember { mutableStateOf(dateRange().first()) }
@@ -119,7 +158,14 @@ fun HomeScreenStateless(
                         color = MaterialTheme.colorScheme.onBackground
                     )
                 }
-                items(tasks) { task -> TaskComponent(task) }
+                items(tasks) { task ->
+                    TaskComponent(
+                        task = task,
+                        isCompleted = isTaskCompleted(task),
+                        onToggleComplete = { onToggleComplete(task) },
+                        onDelete = { onDeleteTask(task) }
+                    )
+                }
             } else {
                 item {
                     Column(
@@ -143,7 +189,6 @@ fun HomeScreenStateless(
                 }
             }
 
-
         }
     }
 }
@@ -155,7 +200,7 @@ fun GreetingsHeader(name: String, tasks: List<TaskModel>) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                "Morning, $name \uD83D\uDC4B",
+                "Morning, $name 👋",
                 fontFamily = PoppinsFontFamily(),
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -197,7 +242,6 @@ fun GreetingsHeader(name: String, tasks: List<TaskModel>) {
 
 }
 
-
 @Preview
 @Composable
 fun HomeScreenStatelessPreview() {
@@ -208,30 +252,25 @@ fun HomeScreenStatelessPreview() {
                 TaskModel(
                     name = "Learn Piano",
                     description = "Description",
-                    type = com.dfcoding.keepconsistent.models.Type.Reminder,
-                    frequency = com.dfcoding.keepconsistent.models.Frequency.Daily,
-                    periodoOfTime = kotlinx.datetime.DateTimePeriod(days = 1),
-                    duration = kotlinx.datetime.DateTimePeriod(days = 1),
-                    categoryModel = CategoryModel(CategoriesType.Personal)
+                    frequency = Frequency.Daily,
+                    customDate = null,
+                    timeOfDay = DateTimePeriod(hours = 8),
+                    duration = DateTimePeriod(minutes = 30),
+                    categoryModel = CategoryModel(CategoriesType.Personal),
+                    listOfWeekDays = null,
+                    listOfMonthDays = null
                 ),
                 TaskModel(
                     name = "Learn Piano",
                     description = "Description",
-                    type = com.dfcoding.keepconsistent.models.Type.Activity,
-                    frequency = com.dfcoding.keepconsistent.models.Frequency.Daily,
-                    periodoOfTime = kotlinx.datetime.DateTimePeriod(days = 1),
-                    duration = kotlinx.datetime.DateTimePeriod(days = 1),
-                    categoryModel = CategoryModel(CategoriesType.Personal)
+                    frequency = Frequency.Daily,
+                    customDate = null,
+                    timeOfDay = DateTimePeriod(hours = 8),
+                    duration = DateTimePeriod(minutes = 30),
+                    categoryModel = CategoryModel(CategoriesType.Personal),
+                    listOfWeekDays = null,
+                    listOfMonthDays = null
                 ),
-                TaskModel(
-                    name = "Learn Piano",
-                    description = "Description",
-                    type = com.dfcoding.keepconsistent.models.Type.Reminder,
-                    frequency = com.dfcoding.keepconsistent.models.Frequency.Daily,
-                    periodoOfTime = kotlinx.datetime.DateTimePeriod(days = 1),
-                    duration = kotlinx.datetime.DateTimePeriod(days = 1),
-                    categoryModel = CategoryModel(CategoriesType.Personal)
-                )
             ),
             image = "",
             categories = listOf(

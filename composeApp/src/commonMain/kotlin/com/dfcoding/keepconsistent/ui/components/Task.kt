@@ -2,6 +2,7 @@ package com.dfcoding.keepconsistent.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,7 +25,7 @@ import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.models.CategoryModel
 import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
-import com.dfcoding.keepconsistent.models.Type
+import com.dfcoding.keepconsistent.util.formatPickedTime
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import keepconsistent.composeapp.generated.resources.Res
@@ -33,7 +35,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun TaskComponent(task: TaskModel) {
+fun TaskComponent(
+    task: TaskModel,
+    isCompleted: Boolean = false,
+    onToggleComplete: () -> Unit = {},
+    onDelete: () -> Unit = {}
+) {
     Column(
         modifier = Modifier.wrapContentWidth().clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
@@ -44,7 +51,6 @@ fun TaskComponent(task: TaskModel) {
             )
             .padding(12.dp)
     ) {
-
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
@@ -63,11 +69,11 @@ fun TaskComponent(task: TaskModel) {
                 )
             }
 
-            StreakComponent()
-
-
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                StreakComponent(streak = task.currentStreak)
+                Checkbox(checked = isCompleted, onCheckedChange = { onToggleComplete() })
+            }
         }
-
 
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
@@ -82,7 +88,7 @@ fun TaskComponent(task: TaskModel) {
                     color = MaterialTheme.colorScheme.outline
                 )
                 Text(
-                    text = task.frequency.name,
+                    text = formatPickedTime(task.timeOfDay.hours, task.timeOfDay.minutes),
                     fontFamily = PoppinsFontFamily(),
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
@@ -98,7 +104,7 @@ fun TaskComponent(task: TaskModel) {
                     color = MaterialTheme.colorScheme.outline
                 )
                 Text(
-                    text = task.frequency.name,
+                    text = task.duration?.let { "${it.hours}h ${it.minutes}m" } ?: "-",
                     fontFamily = PoppinsFontFamily(),
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
@@ -106,12 +112,21 @@ fun TaskComponent(task: TaskModel) {
                 )
             }
         }
+
+        Text(
+            text = "Delete",
+            fontFamily = PoppinsFontFamily(),
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(top = 12.dp).clickable { onDelete() }
+        )
     }
 }
 
 
 @Composable
-fun StreakComponent() {
+fun StreakComponent(streak: Int) {
     Row(
         modifier = Modifier.clip(RoundedCornerShape(12.dp)),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -123,7 +138,7 @@ fun StreakComponent() {
             tint = MaterialTheme.colorScheme.error
         )
 
-        Text("12", fontFamily = PoppinsFontFamily(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text("$streak", fontFamily = PoppinsFontFamily(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
     }
 }
 
@@ -136,12 +151,18 @@ fun TaskComponentPreview() {
             task = TaskModel(
                 name = "Learn Piano",
                 description = "Description",
-                type = Type.Reminder,
                 frequency = Frequency.Daily,
-                periodoOfTime = DateTimePeriod(days = 1),
-                duration = DateTimePeriod(days = 1),
-                categoryModel = CategoryModel(CategoriesType.Personal)
-            )
+                duration = DateTimePeriod(minutes = 30),
+                categoryModel = CategoryModel(CategoriesType.Personal),
+                customDate = null,
+                timeOfDay = DateTimePeriod(hours = 8),
+                listOfWeekDays = null,
+                listOfMonthDays = null,
+                currentStreak = 12
+            ),
+            isCompleted = false,
+            onToggleComplete = {},
+            onDelete = {}
         )
     }
 }

@@ -1,6 +1,63 @@
-CREATE TABLE CONSISTENT (
-    id INTEGER PRIMARY KEY NOT NULL,
-    name TEXT NOT NULL
+CREATE TABLE Task (
+    id  INTEGER PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    frequency TEXT NOT NULL,
+    category TEXT NOT NULL,
+    dateMillis INTEGER,
+    weekDays TEXT,
+    monthDays TEXT,
+    hour INTEGER NOT NULL,
+    minute INTEGER NOT NULL,
+    currentStreak INTEGER NOT NULL DEFAULT 0,
+    longestStreak INTEGER NOT NULL DEFAULT 0,
+    lastCompletedEpochDay INTEGER
+);
+
+CREATE TABLE TaskCompletion (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    taskId INTEGER NOT NULL,
+    epochDay INTEGER NOT NULL,
+    completedAtMillis INTEGER NOT NULL,
+    UNIQUE (taskId, epochDay),
+    FOREIGN KEY (taskId) REFERENCES Task(id) ON DELETE CASCADE
 );
 
 -- QUERIES --
+
+insertTask:
+INSERT INTO Task (id,name,description,frequency,category,dateMillis,weekDays,monthDays,hour,minute,currentStreak,longestStreak,lastCompletedEpochDay)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);
+
+getAllTasks:
+SELECT * FROM Task;
+
+selectTaskById:
+SELECT * FROM Task WHERE id = :id;
+
+selectTasksByDate:
+SELECT * FROM Task WHERE dateMillis = :dateMillis;
+
+selectTaskByCategorie:
+SELECT * FROM Task WHERE category = :category;
+
+deleteTask:
+DELETE FROM Task WHERE id = :id;
+
+updateStreak:
+UPDATE Task
+SET currentStreak = :currentStreak, longestStreak = :longestStreak, lastCompletedEpochDay = :epochDay
+WHERE id = :id;
+
+insertCompletion:
+INSERT OR IGNORE INTO TaskCompletion(taskId,epochDay,completedAtMillis)
+VALUES (?,?,?);
+
+isCompletedForDay:
+SELECT EXISTS(SELECT 1 FROM TaskCompletion WHERE taskId = :taskId AND epochDay = :epochDay);
+
+getCompletions:
+SELECT * FROM TaskCompletion WHERE taskId = :taskId ORDER BY epochDay DESC;
+
+deleteCompletionsForTask:
+DELETE FROM TaskCompletion WHERE taskId = :taskId;

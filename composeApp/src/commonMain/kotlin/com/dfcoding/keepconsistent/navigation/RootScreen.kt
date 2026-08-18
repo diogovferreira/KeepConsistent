@@ -17,13 +17,9 @@ import com.dfcoding.keepconsistent.ui.categories.CategoriesScreen
 import com.dfcoding.keepconsistent.ui.components.AppBottomBar
 import com.dfcoding.keepconsistent.ui.components.BottomNavItem
 import com.dfcoding.keepconsistent.ui.home.HomeScreen
-import com.dfcoding.keepconsistent.ui.profile.ProfileScreen
-import com.dfcoding.keepconsistent.ui.schedule.ScheduleScreen
 import keepconsistent.composeapp.generated.resources.Res
-import keepconsistent.composeapp.generated.resources.ic_calendar
 import keepconsistent.composeapp.generated.resources.ic_home
 import keepconsistent.composeapp.generated.resources.ic_messages
-import keepconsistent.composeapp.generated.resources.ic_profile
 
 class RootScreen : Screen {
     @Composable
@@ -33,16 +29,12 @@ class RootScreen : Screen {
 
 
         val homeScreen = remember { HomeScreen() }
-        val scheduleScreen = remember { ScheduleScreen() }
         val categoriesScreen = remember { CategoriesScreen() }
-        val profileScreen = remember { ProfileScreen() }
 
         val tabs = remember {
             listOf(
                 BottomNavItem(Res.drawable.ic_home, "home"),
-                BottomNavItem(Res.drawable.ic_calendar, "schedule"),
                 BottomNavItem(Res.drawable.ic_messages, "categories"),
-                BottomNavItem(Res.drawable.ic_profile, "profile"),
             )
         }
 
@@ -61,10 +53,7 @@ class RootScreen : Screen {
             Box(modifier = Modifier.padding(bottom = paddingValues.calculateBottomPadding())) {
                 when (currentTab) {
                     "home" -> homeScreen.Content()
-                    "schedule" -> scheduleScreen.Content()
                     "categories" -> categoriesScreen.Content()
-                    "profile" -> profileScreen.Content()
-
                 }
             }
         }

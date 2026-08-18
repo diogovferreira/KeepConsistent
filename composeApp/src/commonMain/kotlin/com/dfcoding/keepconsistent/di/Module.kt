@@ -1,12 +1,19 @@
 package com.dfcoding.keepconsistent.di
 
+import TaskRepositoryImpl
 import com.dfcoding.keepconsistent.data.auth.SupabaseConfig
+import com.dfcoding.keepconsistent.data.local.KeepConsistentDataSource
 import com.dfcoding.keepconsistent.data.repository.AuthRepository
 import com.dfcoding.keepconsistent.data.repository.AuthRepositoryImpl
 import com.dfcoding.keepconsistent.data.repository.OnBoardingRepository
 import com.dfcoding.keepconsistent.data.repository.OnBoardingRepositoryImpl
-import com.dfcoding.keepconsistent.ui.login.forgotpassword.ForgotPasswordScreenViewModel
+import com.dfcoding.keepconsistent.data.repository.TaskRepository
+import com.dfcoding.keepconsistent.database.ConsistentDatabase
+import com.dfcoding.keepconsistent.ui.addtask.AddTaskScreenViewModel
+import com.dfcoding.keepconsistent.ui.categories.CategoriesScreenViewModel
+import com.dfcoding.keepconsistent.ui.home.HomeScreenViewModel
 import com.dfcoding.keepconsistent.ui.login.LoginViewModel
+import com.dfcoding.keepconsistent.ui.login.forgotpassword.ForgotPasswordScreenViewModel
 import com.dfcoding.keepconsistent.ui.login.signup.SignUpViewModel
 import com.dfcoding.keepconsistent.ui.login.updatepassword.UpdatePasswordScreenViewModel
 import io.github.jan.supabase.auth.Auth
@@ -24,6 +31,9 @@ expect val platformModule: Module
 val dataModule = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<OnBoardingRepository> { OnBoardingRepositoryImpl(get()) }
+    single<TaskRepository> { TaskRepositoryImpl(get()) }
+    single { ConsistentDatabase(get()) }
+    single { KeepConsistentDataSource(get()) }
 }
 
 
@@ -38,7 +48,9 @@ val viewModelModule = module {
     factory { SignUpViewModel(get()) }
     factory { ForgotPasswordScreenViewModel(get()) }
     factory { UpdatePasswordScreenViewModel(get()) }
-
+    factory { AddTaskScreenViewModel(get()) }
+    factory { CategoriesScreenViewModel(get()) }
+    factory { HomeScreenViewModel(get()) }
 }
 
 val networkModule = module {
@@ -59,4 +71,4 @@ val networkModule = module {
     }
 }
 
-val appModules = listOf(dataModule, viewModelModule, networkModule, useCasesModule)
+val appModules = listOf(dataModule, viewModelModule, networkModule, useCasesModule,platformModule)
