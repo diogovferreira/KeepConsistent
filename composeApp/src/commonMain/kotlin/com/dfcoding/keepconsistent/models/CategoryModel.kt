@@ -2,18 +2,22 @@ package com.dfcoding.keepconsistent.models
 
 import androidx.compose.ui.graphics.Color
 import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.ic_break
 import keepconsistent.composeapp.generated.resources.ic_megaphone
+import keepconsistent.composeapp.generated.resources.ic_personal
+import keepconsistent.composeapp.generated.resources.ic_work
 import org.jetbrains.compose.resources.DrawableResource
 
 data class CategoryModel(
     val category: CategoriesType,
+    val tasks: Int
 )
 
 
 enum class CategoriesType(val icon: DrawableResource) {
-    Personal(Res.drawable.ic_megaphone),
-    Work(Res.drawable.ic_megaphone),
-    Break(Res.drawable.ic_megaphone)
+    Personal(Res.drawable.ic_personal),
+    Work(Res.drawable.ic_work),
+    Break(Res.drawable.ic_break)
 }
 
 

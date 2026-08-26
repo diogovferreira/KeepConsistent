@@ -1,6 +1,5 @@
 package com.dfcoding.keepconsistent.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +45,6 @@ import com.dfcoding.keepconsistent.ui.components.dateRange
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import keepconsistent.composeapp.generated.resources.Res
-import keepconsistent.composeapp.generated.resources.ic_arrow_back
 import keepconsistent.composeapp.generated.resources.ic_empty_data
 import keepconsistent.composeapp.generated.resources.ic_megaphone
 import keepconsistent.composeapp.generated.resources.ic_pen
@@ -80,7 +78,7 @@ class HomeScreen : Screen {
             is HomeScreenState.Success -> {
                 HomeScreenStateless(
                     tasks = currentState.tasks,
-                    categories = listOf(),
+                    categories = currentState.categories,
                     selectedDate = currentState.selectedDate,
                     onDateSelected = { viewModel.selectDate(it) },
                     isTaskCompleted = { currentState.completedTaskIds.contains(it.id) },
@@ -147,7 +145,7 @@ fun HomeScreenStateless(
                             CategoryItem(
                                 category = category.category.name,
                                 icon = category.category.icon,
-                                tasks = 10
+                                tasks = category.tasks
                             )
                         }
                     }
@@ -261,18 +259,18 @@ fun HomeScreenStatelessPreview() {
                     customDate = null,
                     timeOfDay = DateTimePeriod(hours = 8),
                     duration = DateTimePeriod(minutes = 30),
-                    categoryModel = CategoryModel(CategoriesType.Personal),
+                    categoryType = CategoriesType.Personal,
                     listOfWeekDays = null,
                     listOfMonthDays = null
                 ),
                 TaskModel(
-                    name = "Learn Piano",
+                    name = "Program",
                     description = "Description",
                     frequency = Frequency.Daily,
                     customDate = null,
                     timeOfDay = DateTimePeriod(hours = 8),
                     duration = DateTimePeriod(minutes = 30),
-                    categoryModel = CategoryModel(CategoriesType.Personal),
+                    categoryType = CategoriesType.Work,
                     listOfWeekDays = null,
                     listOfMonthDays = null
                 ),

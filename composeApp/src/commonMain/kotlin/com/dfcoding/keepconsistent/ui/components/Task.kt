@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -34,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,7 +61,7 @@ fun TaskComponent(
     modifier: Modifier = Modifier
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
-    val accent = task.categoryModel.category.accentColor()
+    val accent = task.categoryType.accentColor()
 
     Row(
         modifier = modifier
@@ -101,7 +99,7 @@ fun TaskComponent(
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = task.categoryModel.category.name,
+                        text = task.categoryType.name,
                         fontFamily = PoppinsFontFamily(),
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
@@ -244,7 +242,7 @@ fun TaskComponentPreview() {
                 description = "Description",
                 frequency = Frequency.Daily,
                 duration = DateTimePeriod(minutes = 30),
-                categoryModel = CategoryModel(CategoriesType.Personal),
+                categoryType = CategoriesType.Personal,
                 customDate = null,
                 timeOfDay = DateTimePeriod(hours = 8),
                 listOfWeekDays = null,

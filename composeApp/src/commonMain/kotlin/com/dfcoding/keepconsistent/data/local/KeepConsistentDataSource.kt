@@ -3,7 +3,6 @@ package com.dfcoding.keepconsistent.data.local
 import com.dfcoding.keepconsistent.database.ConsistentDatabase
 import com.dfcoding.keepconsistent.database.Task
 import com.dfcoding.keepconsistent.models.CategoriesType
-import com.dfcoding.keepconsistent.models.CategoryModel
 import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
 import kotlinx.datetime.DateTimePeriod
@@ -17,7 +16,7 @@ class KeepConsistentDataSource(private val database: ConsistentDatabase) {
         name = task.name,
         description = task.description,
         frequency = task.frequency.name,
-        category = task.categoryModel.category.name,
+        category = task.categoryType.name,
         dateMillis = task.customDate,
         weekDays = task.listOfWeekDays?.joinToString(","),
         monthDays = task.listOfMonthDays?.joinToString(","),
@@ -79,7 +78,7 @@ class KeepConsistentDataSource(private val database: ConsistentDatabase) {
         listOfMonthDays = monthDays?.split(",")?.mapNotNull { it.toIntOrNull() },
         timeOfDay = DateTimePeriod(hours = hour.toInt(), minutes = minute.toInt()),
         duration = null, // not persisted — no column for it in the Task table yet
-        categoryModel = CategoryModel(CategoriesType.valueOf(category)),
+        categoryType = CategoriesType.valueOf(category),
         currentStreak = currentStreak.toInt(),
         longestStreak = longestStreak.toInt(),
         lastCompletedEpochDay = lastCompletedEpochDay?.toInt()

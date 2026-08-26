@@ -3,6 +3,7 @@ package com.dfcoding.keepconsistent.ui.home
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.dfcoding.keepconsistent.data.repository.TaskRepository
+import com.dfcoding.keepconsistent.models.CategoryModel
 import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
 import kotlinx.coroutines.CancellationException
@@ -22,7 +23,8 @@ sealed interface HomeScreenState {
     data class Success(
         val selectedDate: LocalDate,
         val tasks: List<TaskModel>,
-        val completedTaskIds: Set<Long>
+        val completedTaskIds: Set<Long>,
+        val categories: List<CategoryModel>
     ) : HomeScreenState
 
     data class Error(val message: String) : HomeScreenState
@@ -53,15 +55,19 @@ class HomeScreenViewModel(private val taskRepository: TaskRepository) : ScreenMo
         screenModelScope.launch {
             _state.value = HomeScreenState.Loading
             try {
+                val allTasks = taskRepository.getAllTasks()
                 val dueTasks = taskRepository.getAllTasks().filter { isDueOn(it, date) }
                 val epochDay = date.toEpochDays().toInt()
-                // Per-day completion via the TaskCompletion table, not the cached
-                // lastCompletedEpochDay shortcut — that only tracks the most recent
-                // completion, so it breaks the moment you mark a non-today date.
+                val categories = allTasks
+                    .groupingBy { it.categoryType }
+                    .eachCount()
+                    .map { (category, count) -> CategoryModel(category, count) }
+                    .sortedWith(compareByDescending<CategoryModel> { it.tasks }.thenBy { it.category.ordinal })
+
                 val completedIds = dueTasks.mapNotNull { task ->
                     task.id?.takeIf { taskRepository.isCompletedForDay(it, epochDay) }
                 }.toSet()
-                _state.value = HomeScreenState.Success(date, dueTasks, completedIds)
+                _state.value = HomeScreenState.Success(date, dueTasks, completedIds, categories)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -70,8 +76,6 @@ class HomeScreenViewModel(private val taskRepository: TaskRepository) : ScreenMo
         }
     }
 
-    // Marks the task complete for whichever date is currently selected — not
-    // necessarily today — so you can mark a future/past occurrence independently.
     @OptIn(ExperimentalTime::class)
     fun toggleComplete(task: TaskModel) {
         val id = task.id ?: return

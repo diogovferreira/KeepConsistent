@@ -1,10 +1,12 @@
 package com.dfcoding.keepconsistent.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import keepconsistent.composeapp.generated.resources.Res
-import keepconsistent.composeapp.generated.resources.ic_megaphone
 import keepconsistent.composeapp.generated.resources.ic_rounded_arrow_right
+import keepconsistent.composeapp.generated.resources.ic_work
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -41,8 +43,8 @@ fun CategoryItem(
         modifier = Modifier.clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.background)
             .padding(20.dp)
-            .width(160.dp)
-            .height(120.dp)
+            .width(140.dp)
+            .height(100.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
@@ -50,11 +52,11 @@ fun CategoryItem(
                 text = category,
                 fontFamily = PoppinsFontFamily(),
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
                 maxLines = 2
             )
-            Icon(
+            Image(
                 modifier = Modifier.size(28.dp),
                 painter = painterResource(icon),
                 contentDescription = "Icon"
@@ -65,14 +67,15 @@ fun CategoryItem(
             text = "$tasks tasks",
             fontFamily = PoppinsFontFamily(),
             fontWeight = FontWeight.Normal,
-            fontSize = 10.sp,
+            fontSize = 12.sp,
             color = MaterialTheme.colorScheme.outline
         )
 
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
+            modifier = Modifier.fillMaxWidth().fillMaxHeight()
                 .clickable(onClick = { onCategoryClick() }),
             verticalAlignment = Alignment.Bottom,
+
         ) {
             Text(
                 text = "Go to Tasks",
@@ -84,7 +87,8 @@ fun CategoryItem(
             Icon(
                 painter = painterResource(Res.drawable.ic_rounded_arrow_right),
                 contentDescription = "Icon",
-                modifier = Modifier.padding(start = 10.dp)
+                modifier = Modifier.padding(start = 10.dp),
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }
@@ -94,5 +98,5 @@ fun CategoryItem(
 @Preview
 @Composable
 fun CategoriesItemPreview() {
-    KeepConsistentTheme { CategoryItem("Work To-do", icon = Res.drawable.ic_megaphone) }
+    KeepConsistentTheme { CategoryItem("Work To-do", icon = Res.drawable.ic_work) }
 }

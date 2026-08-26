@@ -253,7 +253,7 @@ fun AddTaskScreenStateless(
                                 minutes = selectedMinute
                             ),
                             duration = null,
-                            categoryModel = CategoryModel(selectedCategory)
+                            categoryType = selectedCategory
                         )
                     )
                 }

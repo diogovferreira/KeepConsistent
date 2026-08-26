@@ -1,8 +1,6 @@
 package com.dfcoding.keepconsistent.models
 
 import kotlinx.datetime.DateTimePeriod
-import kotlinx.datetime.LocalTime
-
 
 
 data class TaskModel(
@@ -15,7 +13,7 @@ data class TaskModel(
     val listOfMonthDays: List<Int>?, // if monthly
     val timeOfDay: DateTimePeriod, //what time is the task MANDATORY
     val duration: DateTimePeriod?, //the duration of the task, can be null
-    val categoryModel: CategoryModel, // CategoryModel, Personal,Work, Break, MANDATORY
+    val categoryType: CategoriesType, // CategoryModel, Personal,Work, Break, MANDATORY
     val currentStreak: Int = 0,
     val longestStreak: Int = 0,
     val lastCompletedEpochDay: Int? = null // LocalDate.toEpochDays() of the last day this task was marked complete

@@ -32,7 +32,7 @@ class CategoriesScreenViewModel(private val taskRepository: TaskRepository) : Sc
             try {
                 val tasks = taskRepository.getAllTasks()
                 _state.value = CategoriesScreenState.Success(
-                    tasks.groupBy { it.categoryModel.category }
+                    tasks.groupBy { it.categoryType }
                 )
             } catch (e: CancellationException) {
                 throw e
