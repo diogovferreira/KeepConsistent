@@ -1,7 +1,6 @@
 package com.dfcoding.keepconsistent.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,11 +43,6 @@ fun TaskComponent(
     Column(
         modifier = Modifier.wrapContentWidth().clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surface)
-            .border(
-                width = 2.dp,
-                MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(12.dp)
-            )
             .padding(12.dp)
     ) {
 
@@ -57,8 +51,8 @@ fun TaskComponent(
                 Text(
                     text = task.name,
                     fontFamily = PoppinsFontFamily(),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = task.categoryModel.category.name,
@@ -85,26 +79,9 @@ fun TaskComponent(
                     fontFamily = PoppinsFontFamily(),
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.outline
                 )
                 Text(
                     text = formatPickedTime(task.timeOfDay.hours, task.timeOfDay.minutes),
-                    fontFamily = PoppinsFontFamily(),
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-            Column {
-                Text(
-                    text = "Duration",
-                    fontFamily = PoppinsFontFamily(),
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.outline
-                )
-                Text(
-                    text = task.duration?.let { "${it.hours}h ${it.minutes}m" } ?: "-",
                     fontFamily = PoppinsFontFamily(),
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,

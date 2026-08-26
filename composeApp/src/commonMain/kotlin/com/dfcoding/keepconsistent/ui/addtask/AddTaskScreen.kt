@@ -90,7 +90,7 @@ class AddTaskScreen : Screen {
 fun AddTaskScreenStateless(
     goBack: () -> Unit = {},
     addTask: (TaskModel) -> Unit = {},
-    addTaskState: AddTaskState = AddTaskState.Idle,
+    addTaskState: AddTaskState,
     onAddTaskSuccess: () -> Unit = {},
     resetState: () -> Unit = {}
 ) {
@@ -448,6 +448,12 @@ fun MonthDaysSelector(
 @Composable
 fun AddTaskScreenStatelessPreview() {
     KeepConsistentTheme {
-        AddTaskScreenStateless()
+        AddTaskScreenStateless(
+            goBack = TODO(),
+            addTask = TODO(),
+            addTaskState = TODO(),
+            onAddTaskSuccess = TODO(),
+            resetState = TODO()
+        )
     }
 }

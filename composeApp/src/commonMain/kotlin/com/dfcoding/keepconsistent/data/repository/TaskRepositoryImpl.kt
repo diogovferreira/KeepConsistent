@@ -19,4 +19,7 @@ class TaskRepositoryImpl(
     override fun completeTask(taskId: Long, epochDay: Int, completedAtMillis: Long) {
         dataSource.completeTask(taskId, epochDay, completedAtMillis)
     }
+
+    override fun isCompletedForDay(taskId: Long, epochDay: Int): Boolean =
+        dataSource.isCompletedForDay(taskId, epochDay)
 }

@@ -12,18 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +31,6 @@ import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.models.CategoryModel
 import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
-import com.dfcoding.keepconsistent.ui.components.CategoryItem
 import com.dfcoding.keepconsistent.ui.components.DaySelector
 import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
@@ -48,6 +43,7 @@ import keepconsistent.composeapp.generated.resources.ic_arrow_back
 import keepconsistent.composeapp.generated.resources.ic_empty_data
 import keepconsistent.composeapp.generated.resources.ic_megaphone
 import kotlinx.datetime.DateTimePeriod
+import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -61,6 +57,14 @@ class HomeScreen : Screen {
         val viewModel = getScreenModel<HomeScreenViewModel>()
         val state by viewModel.state.collectAsState()
 
+        // Voyager keeps this ScreenModel alive for as long as HomeScreen sits in
+        // the backstack, so its first `init` load only ever runs once. Re-running
+        // refresh() every time this Content() re-enters composition (including
+        // popping back from AddTaskScreen) is what keeps the list from going stale.
+        LaunchedEffect(Unit) {
+            viewModel.refresh()
+        }
+
         when (val currentState = state) {
             HomeScreenState.Loading -> LoadingComponent()
 
@@ -68,18 +72,16 @@ class HomeScreen : Screen {
                 topText = "Something went wrong",
                 bottomText = currentState.message,
                 buttonText = "Try again",
-                buttonAction = { viewModel.loadTodayTasks() },
+                buttonAction = { viewModel.refresh() },
                 isError = true
             )
 
             is HomeScreenState.Success -> {
                 HomeScreenStateless(
-                    name = "",
                     tasks = currentState.tasks,
-                    image = "",
-                    categories = currentState.tasks.map { it.categoryModel }
-                        .distinctBy { it.category },
-                    isTaskCompleted = { viewModel.isCompletedToday(it) },
+                    selectedDate = currentState.selectedDate,
+                    onDateSelected = { viewModel.selectDate(it) },
+                    isTaskCompleted = { currentState.completedTaskIds.contains(it.id) },
                     onToggleComplete = { viewModel.toggleComplete(it) },
                     onDeleteTask = { viewModel.deleteTask(it) }
                 )
@@ -91,16 +93,13 @@ class HomeScreen : Screen {
 
 @Composable
 fun HomeScreenStateless(
-    name: String,
     tasks: List<TaskModel>,
-    image: String,
-    categories: List<CategoryModel>,
+    selectedDate: LocalDate = dateRange().first(),
+    onDateSelected: (LocalDate) -> Unit = {},
     isTaskCompleted: (TaskModel) -> Boolean = { false },
     onToggleComplete: (TaskModel) -> Unit = {},
     onDeleteTask: (TaskModel) -> Unit = {}
 ) {
-    val categoriesListState = rememberLazyListState()
-    var selectedDate by remember { mutableStateOf(dateRange().first()) }
 
     val hasTasks = tasks.isNotEmpty()
 
@@ -113,42 +112,17 @@ fun HomeScreenStateless(
             contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item { GreetingsHeader(name, tasks) }
+            item { GreetingsHeader(tasks) }
 
             item {
                 DaySelector(
                     days = dateRange(),
                     selectedDate = selectedDate,
-                    onDateSelected = { selectedDate = it }
+                    onDateSelected = onDateSelected
                 )
             }
 
             if (hasTasks) {
-                item {
-                    Text(
-                        text = "Categories",
-                        fontFamily = PoppinsFontFamily(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
-
-                item {
-                    LazyRow(
-                        state = categoriesListState,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(categories) { category ->
-                            CategoryItem(
-                                category = category.category.name,
-                                icon = category.category.icon,
-                                tasks = 10
-                            )
-                        }
-                    }
-                }
-
                 item {
                     Text(
                         text = "Daily Tasks",
@@ -195,12 +169,12 @@ fun HomeScreenStateless(
 
 
 @Composable
-fun GreetingsHeader(name: String, tasks: List<TaskModel>) {
+fun GreetingsHeader(tasks: List<TaskModel>) {
 
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                "Morning, $name 👋",
+                "Hello 👋",
                 fontFamily = PoppinsFontFamily(),
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
@@ -247,7 +221,6 @@ fun GreetingsHeader(name: String, tasks: List<TaskModel>) {
 fun HomeScreenStatelessPreview() {
     KeepConsistentTheme {
         HomeScreenStateless(
-            name = "Diogo",
             tasks = listOf(
                 TaskModel(
                     name = "Learn Piano",
@@ -272,11 +245,6 @@ fun HomeScreenStatelessPreview() {
                     listOfMonthDays = null
                 ),
             ),
-            image = "",
-            categories = listOf(
-                CategoryModel(CategoriesType.Personal),
-                CategoryModel(CategoriesType.Work)
-            )
         )
     }
 }

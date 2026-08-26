@@ -38,7 +38,12 @@ class KeepConsistentDataSource(private val database: ConsistentDatabase) {
     fun selectTaskByCategories(category: String) =
         queries.selectTaskByCategorie(category).executeAsList().map { it.toTaskModel() }
 
-    // Logs today's completion (no-op if already logged, via INSERT OR IGNORE) and
+    // Whether a task was marked complete for a specific calendar day (LocalDate.toEpochDays()),
+    // not just "was it completed most recently" — lets a user mark a day other than today.
+    fun isCompletedForDay(taskId: Long, epochDay: Int): Boolean =
+        queries.isCompletedForDay(taskId, epochDay.toLong()).executeAsOne()
+
+    // Logs a completion for the given day (no-op if already logged, via INSERT OR IGNORE) and
     // recomputes the cached streak on Task in the same transaction — see
     // docs/notification-streak-design.md for the algorithm this mirrors.
     fun completeTask(taskId: Long, epochDay: Int, completedAtMillis: Long) {
@@ -49,7 +54,7 @@ class KeepConsistentDataSource(private val database: ConsistentDatabase) {
             val lastCompleted = task.lastCompletedEpochDay?.toInt()
 
             val newStreak = when (lastCompleted) {
-                epochDay -> task.currentStreak.toInt() // already completed today, no-op
+                epochDay -> task.currentStreak.toInt() // already completed this day, no-op
                 epochDay - 1 -> task.currentStreak.toInt() + 1 // consecutive day
                 else -> 1 // gap, or first ever completion
             }

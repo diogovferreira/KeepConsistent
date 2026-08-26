@@ -13,7 +13,7 @@ import com.dfcoding.keepconsistent.data.repository.SessionState
 import com.dfcoding.keepconsistent.deeplink.PasswordRecoveryState
 import com.dfcoding.keepconsistent.navigation.RootScreen
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
-import com.dfcoding.keepconsistent.ui.login.LoginScreen
+import com.dfcoding.keepconsistent.ui.home.HomeScreen
 import com.dfcoding.keepconsistent.ui.login.onboard.OnBoardScreen
 import com.dfcoding.keepconsistent.ui.login.updatepassword.UpdatePasswordScreen
 import org.koin.compose.koinInject
@@ -39,7 +39,7 @@ class AppEntryScreen: Screen {
                 is SessionState.LoggedIn -> navigator.replaceAll(RootScreen())
                 SessionState.LoggedOut -> {
                     if (onBoardingRepository.hasSeenOnboard()) {
-                        navigator.replaceAll(LoginScreen())
+                        navigator.replaceAll(HomeScreen())
                     } else {
                         navigator.replaceAll(OnBoardScreen())
                     }
