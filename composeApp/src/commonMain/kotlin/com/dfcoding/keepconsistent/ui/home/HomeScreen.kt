@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,6 +37,7 @@ import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
 import com.dfcoding.keepconsistent.ui.addtask.AddTaskScreen
 import com.dfcoding.keepconsistent.ui.components.ButtonComponent
+import com.dfcoding.keepconsistent.ui.components.CategoryItem
 import com.dfcoding.keepconsistent.ui.components.DaySelector
 import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
@@ -52,10 +55,6 @@ import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-// Also the screen opened by tapping a task-reminder notification — no login
-// gating here on purpose. That routing (deep link -> straight to HomeScreen,
-// bypassing LoginScreen) needs to be wired wherever the notification's
-// PendingIntent / Navigator root is set up, which isn't in this file.
 class HomeScreen : Screen {
     @Composable
     override fun Content() {
@@ -63,10 +62,6 @@ class HomeScreen : Screen {
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
-        // Voyager keeps this ScreenModel alive for as long as HomeScreen sits in
-        // the backstack, so its first `init` load only ever runs once. Re-running
-        // refresh() every time this Content() re-enters composition (including
-        // popping back from AddTaskScreen) is what keeps the list from going stale.
         LaunchedEffect(Unit) {
             viewModel.refresh()
         }
@@ -85,6 +80,7 @@ class HomeScreen : Screen {
             is HomeScreenState.Success -> {
                 HomeScreenStateless(
                     tasks = currentState.tasks,
+                    categories = listOf(),
                     selectedDate = currentState.selectedDate,
                     onDateSelected = { viewModel.selectDate(it) },
                     isTaskCompleted = { currentState.completedTaskIds.contains(it.id) },
@@ -101,6 +97,7 @@ class HomeScreen : Screen {
 @Composable
 fun HomeScreenStateless(
     tasks: List<TaskModel>,
+    categories: List<CategoryModel>,
     selectedDate: LocalDate = dateRange().first(),
     onDateSelected: (LocalDate) -> Unit = {},
     isTaskCompleted: (TaskModel) -> Boolean = { false },
@@ -108,7 +105,7 @@ fun HomeScreenStateless(
     onDeleteTask: (TaskModel) -> Unit = {},
     addTask: () -> Unit = {}
 ) {
-
+    val categoriesListState = rememberLazyListState()
     val hasTasks = tasks.isNotEmpty()
 
     Box(
@@ -131,6 +128,31 @@ fun HomeScreenStateless(
             }
 
             if (hasTasks) {
+                item {
+                    Text(
+                        text = "Categories",
+                        fontFamily = PoppinsFontFamily(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+
+                item {
+                    LazyRow(
+                        state = categoriesListState,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(categories) { category ->
+                            CategoryItem(
+                                category = category.category.name,
+                                icon = category.category.icon,
+                                tasks = 10
+                            )
+                        }
+                    }
+                }
+
                 item {
                     Text(
                         text = "Daily Tasks",
@@ -255,6 +277,7 @@ fun HomeScreenStatelessPreview() {
                     listOfMonthDays = null
                 ),
             ),
+            categories = listOf()
         )
     }
 }
