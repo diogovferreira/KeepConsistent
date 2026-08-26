@@ -125,41 +125,43 @@ fun HomeScreenStateless(
                 )
             }
 
-            if (hasTasks) {
-                item {
-                    Text(
-                        text = "Categories",
-                        fontFamily = PoppinsFontFamily(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
+            item {
+                Text(
+                    text = "Categories",
+                    fontFamily = PoppinsFontFamily(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
 
-                item {
-                    LazyRow(
-                        state = categoriesListState,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(categories) { category ->
-                            CategoryItem(
-                                category = category.category.name,
-                                icon = category.category.icon,
-                                tasks = category.tasks
-                            )
-                        }
+            item {
+                LazyRow(
+                    state = categoriesListState,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(categories) { category ->
+                        CategoryItem(
+                            category = category.category.name,
+                            icon = category.category.icon,
+                            tasks = category.tasks
+                        )
                     }
                 }
+            }
 
-                item {
-                    Text(
-                        text = "Daily Tasks",
-                        fontFamily = PoppinsFontFamily(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                }
+            item {
+                Text(
+                    text = "Daily Tasks",
+                    fontFamily = PoppinsFontFamily(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 22.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            if (hasTasks) {
+
                 items(tasks) { task ->
                     TaskComponent(
                         task = task,
@@ -181,7 +183,7 @@ fun HomeScreenStateless(
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Text(
-                            "No tasks yet!",
+                            "No tasks for today!",
                             fontFamily = PoppinsFontFamily(),
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp,
