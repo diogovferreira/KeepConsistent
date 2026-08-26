@@ -10,7 +10,6 @@ import com.dfcoding.keepconsistent.data.repository.OnBoardingRepositoryImpl
 import com.dfcoding.keepconsistent.data.repository.TaskRepository
 import com.dfcoding.keepconsistent.database.ConsistentDatabase
 import com.dfcoding.keepconsistent.ui.addtask.AddTaskScreenViewModel
-import com.dfcoding.keepconsistent.ui.categories.CategoriesScreenViewModel
 import com.dfcoding.keepconsistent.ui.home.HomeScreenViewModel
 import com.dfcoding.keepconsistent.ui.login.LoginViewModel
 import com.dfcoding.keepconsistent.ui.login.forgotpassword.ForgotPasswordScreenViewModel
@@ -49,7 +48,6 @@ val viewModelModule = module {
     factory { ForgotPasswordScreenViewModel(get()) }
     factory { UpdatePasswordScreenViewModel(get()) }
     factory { AddTaskScreenViewModel(get()) }
-    factory { CategoriesScreenViewModel(get()) }
     factory { HomeScreenViewModel(get()) }
 }
 

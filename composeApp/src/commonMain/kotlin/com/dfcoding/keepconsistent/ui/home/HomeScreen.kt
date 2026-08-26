@@ -27,10 +27,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.models.CategoryModel
 import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
+import com.dfcoding.keepconsistent.ui.addtask.AddTaskScreen
+import com.dfcoding.keepconsistent.ui.components.ButtonComponent
 import com.dfcoding.keepconsistent.ui.components.DaySelector
 import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
@@ -42,6 +46,7 @@ import keepconsistent.composeapp.generated.resources.Res
 import keepconsistent.composeapp.generated.resources.ic_arrow_back
 import keepconsistent.composeapp.generated.resources.ic_empty_data
 import keepconsistent.composeapp.generated.resources.ic_megaphone
+import keepconsistent.composeapp.generated.resources.ic_pen
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.LocalDate
 import org.jetbrains.compose.resources.painterResource
@@ -56,6 +61,7 @@ class HomeScreen : Screen {
     override fun Content() {
         val viewModel = getScreenModel<HomeScreenViewModel>()
         val state by viewModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
 
         // Voyager keeps this ScreenModel alive for as long as HomeScreen sits in
         // the backstack, so its first `init` load only ever runs once. Re-running
@@ -83,7 +89,8 @@ class HomeScreen : Screen {
                     onDateSelected = { viewModel.selectDate(it) },
                     isTaskCompleted = { currentState.completedTaskIds.contains(it.id) },
                     onToggleComplete = { viewModel.toggleComplete(it) },
-                    onDeleteTask = { viewModel.deleteTask(it) }
+                    onDeleteTask = { viewModel.deleteTask(it) },
+                    addTask = { navigator.push(AddTaskScreen()) }
                 )
             }
         }
@@ -98,7 +105,8 @@ fun HomeScreenStateless(
     onDateSelected: (LocalDate) -> Unit = {},
     isTaskCompleted: (TaskModel) -> Boolean = { false },
     onToggleComplete: (TaskModel) -> Unit = {},
-    onDeleteTask: (TaskModel) -> Unit = {}
+    onDeleteTask: (TaskModel) -> Unit = {},
+    addTask: () -> Unit = {}
 ) {
 
     val hasTasks = tasks.isNotEmpty()
@@ -164,6 +172,13 @@ fun HomeScreenStateless(
             }
 
         }
+
+        ButtonComponent(
+            text = "Add Task",
+            icon = Res.drawable.ic_pen,
+            onClick = { addTask() },
+            modifier = Modifier.align(Alignment.BottomEnd).padding(all = 20.dp)
+        )
     }
 }
 
@@ -207,11 +222,6 @@ fun GreetingsHeader(tasks: List<TaskModel>) {
                 )
             }
         }
-
-        Image(
-            painter = painterResource(Res.drawable.ic_arrow_back),
-            contentDescription = "User Image"
-        )
     }
 
 }

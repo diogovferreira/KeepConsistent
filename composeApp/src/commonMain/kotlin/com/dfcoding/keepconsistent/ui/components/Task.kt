@@ -1,6 +1,7 @@
 package com.dfcoding.keepconsistent.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,8 +43,14 @@ fun TaskComponent(
 ) {
     Column(
         modifier = Modifier.wrapContentWidth().clip(RoundedCornerShape(12.dp))
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(12.dp)
+            )
             .background(MaterialTheme.colorScheme.surface)
             .padding(12.dp)
+
     ) {
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -63,21 +70,11 @@ fun TaskComponent(
                 )
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                StreakComponent(streak = task.currentStreak)
-                Checkbox(checked = isCompleted, onCheckedChange = { onToggleComplete() })
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
             Column {
                 Text(
-                    text = "Start Time",
+                    text = "Time",
                     fontFamily = PoppinsFontFamily(),
-                    fontWeight = FontWeight.Normal,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 12.sp,
                 )
                 Text(
@@ -87,6 +84,27 @@ fun TaskComponent(
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
+            }
+
+            Column {
+                Text(
+                    text = "Periodicy",
+                    fontFamily = PoppinsFontFamily(),
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 12.sp,
+                )
+                Text(
+                    text = task.frequency.name,
+                    fontFamily = PoppinsFontFamily(),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                StreakComponent(streak = task.currentStreak)
+                Checkbox(checked = isCompleted, onCheckedChange = { onToggleComplete() })
             }
         }
 
@@ -115,7 +133,12 @@ fun StreakComponent(streak: Int) {
             tint = MaterialTheme.colorScheme.error
         )
 
-        Text("$streak", fontFamily = PoppinsFontFamily(), fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(
+            "$streak",
+            fontFamily = PoppinsFontFamily(),
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp
+        )
     }
 }
 
