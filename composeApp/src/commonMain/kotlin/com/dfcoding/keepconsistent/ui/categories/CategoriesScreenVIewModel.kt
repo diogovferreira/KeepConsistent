@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
 sealed interface CategoriesScreenState {
     data object Loading : CategoriesScreenState
@@ -38,6 +39,23 @@ class CategoriesScreenViewModel(private val taskRepository: TaskRepository) : Sc
                 throw e
             } catch (e: Exception) {
                 _state.value = CategoriesScreenState.Error(e.message ?: "Failed to load tasks")
+            }
+        }
+    }
+
+
+    @OptIn(ExperimentalTime::class)
+    fun deleteTask(task: TaskModel) {
+        val id = task.id ?: return
+
+        screenModelScope.launch {
+            try {
+                taskRepository.deleteTask(id)
+                loadTasks()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _state.value = CategoriesScreenState.Error(e.message ?: "Failed to delete task")
             }
         }
     }

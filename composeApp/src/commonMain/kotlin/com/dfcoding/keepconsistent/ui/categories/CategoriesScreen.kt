@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import com.dfcoding.keepconsistent.models.CategoriesType
+import com.dfcoding.keepconsistent.models.TaskModel
 import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.ui.components.TaskComponent
@@ -41,7 +42,8 @@ class CategoriesScreen : Screen {
 
         CategoriesScreenStateless(
             state = state,
-            onRetry = { viewModel.loadTasks() }
+            onRetry = { viewModel.loadTasks() },
+            onDeleteTask = { task -> viewModel.deleteTask(task) }
         )
     }
 }
@@ -49,10 +51,12 @@ class CategoriesScreen : Screen {
 @Composable
 fun CategoriesScreenStateless(
     state: CategoriesScreenState,
-    onRetry: () -> Unit = {}
+    onRetry: () -> Unit = {},
+    onDeleteTask: (TaskModel) -> Unit = {}
 ) {
     Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer).padding(top = 20.dp, start = 5.dp, end = 5.dp)
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(top = 20.dp, start = 5.dp, end = 5.dp)
     ) {
         when (state) {
             CategoriesScreenState.Loading -> LoadingComponent()
@@ -88,7 +92,11 @@ fun CategoriesScreenStateless(
                             item {
                                 CategorySectionHeader(category, tasks.size)
                             }
-                            items(tasks) { task -> TaskComponent(task) }
+                            items(tasks) { task ->
+                                TaskComponent(
+                                    task,
+                                    onDelete = { onDeleteTask(task) })
+                            }
                         }
                     }
                 }
@@ -133,7 +141,7 @@ private fun EmptyCategoriesState() {
 
 @Preview
 @Composable
-fun CategoriesScreenStatelessPreview(){
+fun CategoriesScreenStatelessPreview() {
     KeepConsistentTheme {
 
     }
