@@ -1,6 +1,7 @@
 package com.dfcoding.keepconsistent.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import com.dfcoding.keepconsistent.models.CategoryModel
 import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
 import com.dfcoding.keepconsistent.ui.addtask.AddTaskScreen
+import com.dfcoding.keepconsistent.ui.categories.CategoriesScreen
 import com.dfcoding.keepconsistent.ui.components.ButtonComponent
 import com.dfcoding.keepconsistent.ui.components.CategoryItem
 import com.dfcoding.keepconsistent.ui.components.DaySelector
@@ -84,7 +86,8 @@ class HomeScreen : Screen {
                     isTaskCompleted = { currentState.completedTaskIds.contains(it.id) },
                     onToggleComplete = { viewModel.toggleComplete(it) },
                     onDeleteTask = { viewModel.deleteTask(it) },
-                    addTask = { navigator.push(AddTaskScreen()) }
+                    addTask = { navigator.push(AddTaskScreen()) },
+                    onCategoryClick = {navigator.push(CategoriesScreen())}
                 )
             }
         }
@@ -101,7 +104,8 @@ fun HomeScreenStateless(
     isTaskCompleted: (TaskModel) -> Boolean = { false },
     onToggleComplete: (TaskModel) -> Unit = {},
     onDeleteTask: (TaskModel) -> Unit = {},
-    addTask: () -> Unit = {}
+    addTask: () -> Unit = {},
+    onCategoryClick: () -> Unit = {}
 ) {
     val categoriesListState = rememberLazyListState()
     val hasTasks = tasks.isNotEmpty()
@@ -126,13 +130,25 @@ fun HomeScreenStateless(
             }
 
             item {
-                Text(
-                    text = "Categories",
-                    fontFamily = PoppinsFontFamily(),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+                    Text(
+                        text = "Categories",
+                        fontFamily = PoppinsFontFamily(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+
+                    Text(
+                        modifier = Modifier.clickable{onCategoryClick()},
+                        text = "See all",
+                        fontFamily = PoppinsFontFamily(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
             }
 
             item {
@@ -144,7 +160,7 @@ fun HomeScreenStateless(
                         CategoryItem(
                             category = category.category.name,
                             icon = category.category.icon,
-                            tasks = category.tasks
+                            tasks = category.tasks,
                         )
                     }
                 }
