@@ -60,7 +60,8 @@ fun TaskComponent(
     isCompleted: Boolean = false,
     onToggleComplete: () -> Unit = {},
     onDelete: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showCheckBox: Boolean = true
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
     val accent = task.categoryType.accentColor()
@@ -168,9 +169,11 @@ fun TaskComponent(
 
                 Spacer(Modifier.weight(1f))
 
-                Checkbox(checked = isCompleted, onCheckedChange = { onToggleComplete() })
+                if(showCheckBox){
+                    Checkbox(checked = isCompleted, onCheckedChange = { onToggleComplete() })
+                }
 
-                StreakBadge(streak = task.currentStreak)
+                StreakBadge(streak = task.longestStreak)
             }
 
             task.scheduleDetail()?.let { (label, value) ->

@@ -95,7 +95,8 @@ fun CategoriesScreenStateless(
                             items(tasks) { task ->
                                 TaskComponent(
                                     task,
-                                    onDelete = { onDeleteTask(task) })
+                                    onDelete = { onDeleteTask(task) },
+                                    showCheckBox = false)
                             }
                         }
                     }

@@ -24,7 +24,8 @@ sealed interface HomeScreenState {
         val selectedDate: LocalDate,
         val tasks: List<TaskModel>,
         val completedTaskIds: Set<Long>,
-        val categories: List<CategoryModel>
+        val categories: List<CategoryModel>,
+        val pendingCompletion: TaskModel? = null
     ) : HomeScreenState
 
     data class Error(val message: String) : HomeScreenState
@@ -80,20 +81,46 @@ class HomeScreenViewModel(private val taskRepository: TaskRepository) : ScreenMo
     fun toggleComplete(task: TaskModel) {
         val id = task.id ?: return
         val current = _state.value as? HomeScreenState.Success ?: return
-        if (id in current.completedTaskIds) return // already completed that day, no "undo" yet
+        val alreadyDone = id in current.completedTaskIds
+        val today = kotlin.time.Clock.System.todayIn(TimeZone.currentSystemDefault())
 
+        // Only warn when marking complete on another day. Undo never needs a prompt.
+        if (!alreadyDone && current.selectedDate != today) {
+            _state.value = current.copy(pendingCompletion = task)
+            return
+        }
+        applyCompletion(task, complete = !alreadyDone, date = current.selectedDate)
+    }
+
+    fun confirmPendingCompletion() {
+        val current = _state.value as? HomeScreenState.Success ?: return
+        val task = current.pendingCompletion ?: return
+        _state.value = current.copy(pendingCompletion = null)
+        applyCompletion(task, complete = true, date = current.selectedDate)
+    }
+
+    fun dismissPendingCompletion() {
+        val current = _state.value as? HomeScreenState.Success ?: return
+        _state.value = current.copy(pendingCompletion = null)
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private fun applyCompletion(task: TaskModel, complete: Boolean, date: LocalDate) {
+        val id = task.id ?: return
         screenModelScope.launch {
             try {
-                taskRepository.completeTask(
+                taskRepository.setComplete(
                     taskId = id,
-                    epochDay = current.selectedDate.toEpochDays().toInt(),
-                    completedAtMillis = kotlin.time.Clock.System.now().toEpochMilliseconds()
+                    epochDay = date.toEpochDays().toInt(),
+                    completed = complete,
+                    completedAtMillis = kotlin.time.Clock.System.now().toEpochMilliseconds(),
+                    isDueOn = { epochDay -> isDueOn(task, LocalDate.fromEpochDays(epochDay)) }
                 )
-                loadTasksFor(current.selectedDate)
+                loadTasksFor(date)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                _state.value = HomeScreenState.Error(e.message ?: "Failed to complete task")
+                _state.value = HomeScreenState.Error(e.message ?: "Failed to update task")
             }
         }
     }

@@ -12,7 +12,7 @@ interface TaskRepository {
     fun getAllTasks(): List<TaskModel>
     fun insertTask(task: TaskModel)
     fun deleteTask(id: Long)
-    fun completeTask(taskId: Long, epochDay: Int, completedAtMillis: Long)
+    fun setComplete(taskId: Long, epochDay: Int,completed: Boolean, completedAtMillis: Long, isDueOn: (Int) -> Boolean)
     fun isCompletedForDay(taskId: Long, epochDay: Int): Boolean
 }
 

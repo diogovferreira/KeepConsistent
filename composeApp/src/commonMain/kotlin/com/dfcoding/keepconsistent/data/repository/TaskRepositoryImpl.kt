@@ -16,9 +16,16 @@ class TaskRepositoryImpl(
         dataSource.deleteTask(id)
     }
 
-    override fun completeTask(taskId: Long, epochDay: Int, completedAtMillis: Long) {
-        dataSource.completeTask(taskId, epochDay, completedAtMillis)
+    override fun setComplete(
+        taskId: Long,
+        epochDay: Int,
+        completed: Boolean,
+        completedAtMillis: Long,
+        isDueOn: (Int) -> Boolean
+    ) {
+        dataSource.setCompleted(taskId, epochDay, completed,completedAtMillis, isDueOn)
     }
+
 
     override fun isCompletedForDay(taskId: Long, epochDay: Int): Boolean =
         dataSource.isCompletedForDay(taskId, epochDay)

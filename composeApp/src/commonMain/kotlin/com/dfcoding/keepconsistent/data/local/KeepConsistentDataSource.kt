@@ -45,27 +45,52 @@ class KeepConsistentDataSource(private val database: ConsistentDatabase) {
     // Logs a completion for the given day (no-op if already logged, via INSERT OR IGNORE) and
     // recomputes the cached streak on Task in the same transaction — see
     // docs/notification-streak-design.md for the algorithm this mirrors.
-    fun completeTask(taskId: Long, epochDay: Int, completedAtMillis: Long) {
+    fun setCompleted(
+        taskId: Long,
+        epochDay: Int,
+        completed: Boolean,
+        completedAtMillis: Long,
+        isDueOn: (Int) -> Boolean
+    ) {
         queries.transaction {
-            queries.insertCompletion(taskId, epochDay.toLong(), completedAtMillis)
-
-            val task = queries.selectTaskById(taskId).executeAsOneOrNull() ?: return@transaction
-            val lastCompleted = task.lastCompletedEpochDay?.toInt()
-
-            val newStreak = when (lastCompleted) {
-                epochDay -> task.currentStreak.toInt() // already completed this day, no-op
-                epochDay - 1 -> task.currentStreak.toInt() + 1 // consecutive day
-                else -> 1 // gap, or first ever completion
+            if (completed) {
+                queries.insertCompletion(taskId, epochDay.toLong(), completedAtMillis)
+            } else {
+                queries.deleteCompletion(taskId, epochDay.toLong())
             }
-            val newLongest = maxOf(task.longestStreak.toInt(), newStreak)
+
+            val days = queries.selectCompletionDays(taskId).executeAsList().map { it.toInt() }.toSet()
+            val (current, longest) = computeStreaks(days, isDueOn)
 
             queries.updateStreak(
-                currentStreak = newStreak.toLong(),
-                longestStreak = newLongest.toLong(),
-                epochDay = epochDay.toLong(),
+                currentStreak = current.toLong(),
+                longestStreak = longest.toLong(),
+                epochDay = days.maxOrNull()?.toLong(),   // nullable now — undoing the only completion clears it
                 id = taskId
             )
         }
+    }
+
+
+    /** Returns current streak to longest streak, walking due days backwards from the last completion. */
+    fun computeStreaks(completedDays: Set<Int>, isDueOn: (Int) -> Boolean): Pair<Int, Int> {
+        if (completedDays.isEmpty()) return 0 to 0
+
+        var run = 0
+        var longest = 0
+        var current = -1
+
+        for (day in completedDays.max() downTo completedDays.min()) {
+            if (!isDueOn(day)) continue
+            if (day in completedDays) {
+                run++
+                longest = maxOf(longest, run)
+            } else {
+                if (current == -1) current = run   // first gap from the top ends the live streak
+                run = 0
+            }
+        }
+        return (if (current == -1) run else current) to longest
     }
 
     fun Task.toTaskModel() = TaskModel(

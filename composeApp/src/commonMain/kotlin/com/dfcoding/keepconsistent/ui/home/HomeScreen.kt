@@ -15,13 +15,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -52,8 +55,12 @@ import keepconsistent.composeapp.generated.resources.ic_megaphone
 import keepconsistent.composeapp.generated.resources.ic_pen
 import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class HomeScreen : Screen {
     @Composable
@@ -79,6 +86,7 @@ class HomeScreen : Screen {
 
             is HomeScreenState.Success -> {
                 HomeScreenStateless(
+                    state = currentState,
                     tasks = currentState.tasks,
                     categories = currentState.categories,
                     selectedDate = currentState.selectedDate,
@@ -87,16 +95,23 @@ class HomeScreen : Screen {
                     onToggleComplete = { viewModel.toggleComplete(it) },
                     onDeleteTask = { viewModel.deleteTask(it) },
                     addTask = { navigator.push(AddTaskScreen()) },
-                    onCategoryClick = {navigator.push(CategoriesScreen())}
+                    onCategoryClick = { navigator.push(CategoriesScreen()) },
+                    dismissPendingCompletion = { viewModel.dismissPendingCompletion() },
+                    confirmPendingCompletion = { viewModel.confirmPendingCompletion() }
                 )
+
+
             }
         }
+
+
     }
 }
 
 
 @Composable
 fun HomeScreenStateless(
+    state: HomeScreenState,
     tasks: List<TaskModel>,
     categories: List<CategoryModel>,
     selectedDate: LocalDate = dateRange().first(),
@@ -105,13 +120,17 @@ fun HomeScreenStateless(
     onToggleComplete: (TaskModel) -> Unit = {},
     onDeleteTask: (TaskModel) -> Unit = {},
     addTask: () -> Unit = {},
-    onCategoryClick: () -> Unit = {}
+    onCategoryClick: () -> Unit = {},
+    dismissPendingCompletion: () -> Unit = {},
+    confirmPendingCompletion: () -> Unit = {}
 ) {
     val categoriesListState = rememberLazyListState()
     val hasTasks = tasks.isNotEmpty()
-
+    @OptIn(ExperimentalTime::class)
+    val today = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
     Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer).padding(top = 20.dp, start = 5.dp, end = 5.dp)
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(top = 20.dp, start = 5.dp, end = 5.dp)
             .navigationBarsPadding()
     ) {
         LazyColumn(
@@ -130,7 +149,10 @@ fun HomeScreenStateless(
             }
 
             item {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(
                         text = "Categories",
                         fontFamily = PoppinsFontFamily(),
@@ -140,7 +162,7 @@ fun HomeScreenStateless(
                     )
 
                     Text(
-                        modifier = Modifier.clickable{onCategoryClick()},
+                        modifier = Modifier.clickable { onCategoryClick() },
                         text = "See all",
                         fontFamily = PoppinsFontFamily(),
                         fontWeight = FontWeight.Bold,
@@ -217,6 +239,42 @@ fun HomeScreenStateless(
             onClick = { addTask() },
             modifier = Modifier.align(Alignment.BottomEnd).padding(all = 20.dp)
         )
+
+        when (state) {
+            is HomeScreenState.Success -> {
+                state.pendingCompletion?.let { task ->
+                    val isFuture = state.selectedDate > today
+                    AlertDialog(
+                        onDismissRequest = { dismissPendingCompletion() },
+                        title = { Text(if (isFuture) "Complete ahead of time?" else "Complete for a past day?") },
+                        text = {
+                            Text(
+                                if (isFuture) "${task.name} isn't due until ${state.selectedDate}. Marking it now counts toward your streak for that day."
+                                else "This marks ${task.name} as done on ${state.selectedDate}, not today."
+                            )
+                        },
+                        confirmButton = {
+                            TextButton(onClick = { confirmPendingCompletion() }) {
+                                Text(
+                                    "Mark complete"
+                                )
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { dismissPendingCompletion() }) {
+                                Text(
+                                    "Cancel"
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+
+            else -> {}
+        }
+
+
     }
 }
 
@@ -293,7 +351,8 @@ fun HomeScreenStatelessPreview() {
                     listOfMonthDays = null
                 ),
             ),
-            categories = listOf()
+            categories = listOf(),
+            state = HomeScreenState.Loading
         )
     }
 }
