@@ -111,7 +111,7 @@ fun HomeScreenStateless(
     val hasTasks = tasks.isNotEmpty()
 
     Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer).padding(top = 20.dp, start = 5.dp, end = 5.dp)
             .navigationBarsPadding()
     ) {
         LazyColumn(

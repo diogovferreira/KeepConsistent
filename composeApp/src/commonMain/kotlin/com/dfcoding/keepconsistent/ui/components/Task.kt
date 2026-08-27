@@ -45,11 +45,13 @@ import com.dfcoding.keepconsistent.util.formatPickedTime
 import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import keepconsistent.composeapp.generated.resources.Res
+import keepconsistent.composeapp.generated.resources.ic_calendar
 import keepconsistent.composeapp.generated.resources.ic_clock
 import keepconsistent.composeapp.generated.resources.ic_fire
 import kotlinx.datetime.DateTimePeriod
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.collections.forEach
 
 
 @Composable
@@ -170,6 +172,28 @@ fun TaskComponent(
 
                 StreakBadge(streak = task.currentStreak)
             }
+
+            task.scheduleDetail()?.let { (label, value) ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    LabelledValue(label = label) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_calendar),
+                                contentDescription = null,
+                                tint = accent,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            ValueText(value)
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -197,6 +221,7 @@ private fun ValueText(text: String) {
         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
     )
 }
+
 
 @Composable
 fun StreakBadge(streak: Int, modifier: Modifier = Modifier) {
@@ -232,6 +257,23 @@ fun StreakBadge(streak: Int, modifier: Modifier = Modifier) {
     }
 }
 
+private data class ScheduleDetail(val label: String, val value: String)
+
+private fun TaskModel.scheduleDetail(): ScheduleDetail? = when (frequency) {
+    Frequency.Daily -> null
+    Frequency.Weekly -> listOfWeekDays
+        ?.takeIf { it.isNotEmpty() }
+        ?.joinToString(", ") { it.take(3) }
+        ?.let { ScheduleDetail("Week days", it) }
+
+    Frequency.Monthly -> listOfMonthDays
+        ?.takeIf { it.isNotEmpty() }
+        ?.joinToString(", ")
+        ?.let { ScheduleDetail("Month days", it) }
+
+    Frequency.Custom -> customDate?.let { ScheduleDetail("Date", it.toString()) }
+}
+
 @Preview
 @Composable
 fun TaskComponentPreview() {
@@ -240,12 +282,12 @@ fun TaskComponentPreview() {
             task = TaskModel(
                 name = "Learn Piano",
                 description = "Description",
-                frequency = Frequency.Daily,
+                frequency = Frequency.Weekly,
                 duration = DateTimePeriod(minutes = 30),
                 categoryType = CategoriesType.Personal,
                 customDate = null,
                 timeOfDay = DateTimePeriod(hours = 8),
-                listOfWeekDays = null,
+                listOfWeekDays = listOf("Monday", "Tuesday"),
                 listOfMonthDays = null,
                 currentStreak = 12
             ),

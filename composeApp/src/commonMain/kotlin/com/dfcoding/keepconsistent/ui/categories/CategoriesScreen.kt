@@ -26,10 +26,12 @@ import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.ui.components.InfoDisplayComponent
 import com.dfcoding.keepconsistent.ui.components.LoadingComponent
 import com.dfcoding.keepconsistent.ui.components.TaskComponent
+import com.theme.KeepConsistentTheme
 import com.theme.PoppinsFontFamily
 import keepconsistent.composeapp.generated.resources.Res
 import keepconsistent.composeapp.generated.resources.ic_empty_data
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 class CategoriesScreen : Screen {
     @Composable
@@ -46,11 +48,11 @@ class CategoriesScreen : Screen {
 
 @Composable
 fun CategoriesScreenStateless(
-    state: CategoriesScreenState = CategoriesScreenState.Loading,
+    state: CategoriesScreenState,
     onRetry: () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer).padding(top = 20.dp, start = 5.dp, end = 5.dp)
     ) {
         when (state) {
             CategoriesScreenState.Loading -> LoadingComponent()
@@ -98,7 +100,7 @@ fun CategoriesScreenStateless(
 @Composable
 private fun CategorySectionHeader(category: CategoriesType, taskCount: Int) {
     Text(
-        text = "${category.name} ($taskCount)",
+        text = category.name,
         fontFamily = PoppinsFontFamily(),
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
@@ -126,5 +128,13 @@ private fun EmptyCategoriesState() {
             fontSize = 22.sp,
             color = MaterialTheme.colorScheme.onBackground
         )
+    }
+}
+
+@Preview
+@Composable
+fun CategoriesScreenStatelessPreview(){
+    KeepConsistentTheme {
+
     }
 }
