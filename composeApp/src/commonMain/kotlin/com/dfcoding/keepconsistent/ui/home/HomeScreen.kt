@@ -28,15 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.dfcoding.keepconsistent.models.CategoriesType
 import com.dfcoding.keepconsistent.models.CategoryModel
-import com.dfcoding.keepconsistent.models.Frequency
 import com.dfcoding.keepconsistent.models.TaskModel
 import com.dfcoding.keepconsistent.ui.addtask.AddTaskScreen
 import com.dfcoding.keepconsistent.ui.categories.CategoriesScreen
@@ -53,7 +52,6 @@ import keepconsistent.composeapp.generated.resources.Res
 import keepconsistent.composeapp.generated.resources.ic_empty_data
 import keepconsistent.composeapp.generated.resources.ic_megaphone
 import keepconsistent.composeapp.generated.resources.ic_pen
-import kotlinx.datetime.DateTimePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
@@ -128,6 +126,8 @@ fun HomeScreenStateless(
     val hasTasks = tasks.isNotEmpty()
     @OptIn(ExperimentalTime::class)
     val today = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
+
+
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(top = 20.dp, start = 5.dp, end = 5.dp)
@@ -138,7 +138,6 @@ fun HomeScreenStateless(
             contentPadding = PaddingValues(top = 20.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            item { GreetingsHeader(tasks) }
 
             item {
                 DaySelector(
@@ -148,57 +147,75 @@ fun HomeScreenStateless(
                 )
             }
 
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+            if(selectedDate != today){
+                item {
                     Text(
-                        text = "Categories",
+                        modifier = Modifier.fillMaxWidth().clickable { onDateSelected(today) },
+                        text = "Go to Today",
+                        fontFamily = PoppinsFontFamily(),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+
+
+
+
+            if (hasTasks) {
+
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Categories",
+                            fontFamily = PoppinsFontFamily(),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+
+                        Text(
+                            modifier = Modifier.clickable { onCategoryClick() },
+                            text = "See all",
+                            fontFamily = PoppinsFontFamily(),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                }
+
+                item {
+                    LazyRow(
+                        state = categoriesListState,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(categories) { category ->
+                            CategoryItem(
+                                category = category.category.name,
+                                icon = category.category.icon,
+                                tasks = category.tasks,
+                            )
+                        }
+                    }
+                }
+
+                item {
+                    Text(
+                        text = "Daily Tasks",
                         fontFamily = PoppinsFontFamily(),
                         fontWeight = FontWeight.Bold,
                         fontSize = 22.sp,
                         color = MaterialTheme.colorScheme.onBackground
                     )
-
-                    Text(
-                        modifier = Modifier.clickable { onCategoryClick() },
-                        text = "See all",
-                        fontFamily = PoppinsFontFamily(),
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
                 }
-
-            }
-
-            item {
-                LazyRow(
-                    state = categoriesListState,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(categories) { category ->
-                        CategoryItem(
-                            category = category.category.name,
-                            icon = category.category.icon,
-                            tasks = category.tasks,
-                        )
-                    }
-                }
-            }
-
-            item {
-                Text(
-                    text = "Daily Tasks",
-                    fontFamily = PoppinsFontFamily(),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-            if (hasTasks) {
 
                 items(tasks) { task ->
                     TaskComponent(
@@ -211,7 +228,7 @@ fun HomeScreenStateless(
             } else {
                 item {
                     Column(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().padding(top = 100.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -289,34 +306,8 @@ fun GreetingsHeader(tasks: List<TaskModel>) {
                 fontFamily = PoppinsFontFamily(),
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 22.sp
+                fontSize = 26.sp
             )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(Res.drawable.ic_megaphone),
-                    contentDescription = "Megaphone",
-                    tint = MaterialTheme.colorScheme.error
-                )
-
-                Text(
-                    "${tasks.size} tasks",
-                    fontFamily = PoppinsFontFamily(),
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.error,
-                    fontSize = 12.sp
-                )
-                Text(
-                    " are waiting for you today",
-                    fontFamily = PoppinsFontFamily(),
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.outline,
-                    fontSize = 12.sp
-                )
-            }
         }
     }
 
@@ -328,7 +319,7 @@ fun HomeScreenStatelessPreview() {
     KeepConsistentTheme {
         HomeScreenStateless(
             tasks = listOf(
-                TaskModel(
+/*                TaskModel(
                     name = "Learn Piano",
                     description = "Description",
                     frequency = Frequency.Daily,
@@ -349,7 +340,7 @@ fun HomeScreenStatelessPreview() {
                     categoryType = CategoriesType.Work,
                     listOfWeekDays = null,
                     listOfMonthDays = null
-                ),
+                ),*/
             ),
             categories = listOf(),
             state = HomeScreenState.Loading

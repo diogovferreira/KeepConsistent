@@ -45,13 +45,16 @@ fun DaySelector(
     onDateSelected: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState() // creates the object that tracks lazyRow or Column scrool position, which index,scroll offset...
-    val todayIndex = remember(days){
-        days.indexOf(Clock.System.todayIn(TimeZone.currentSystemDefault())).coerceAtLeast(0)
-    }
+    val listState = rememberLazyListState()
+    LaunchedEffect(selectedDate) {
+        val index = days.indexOf(selectedDate)
+        if (index < 0) return@LaunchedEffect
 
-    LaunchedEffect(Unit){
-        listState.scrollToItem(todayIndex)
+        val visible = listState.layoutInfo.visibleItemsInfo
+        when {
+            visible.isEmpty() -> listState.scrollToItem(index)
+            visible.none { it.index == index } -> listState.animateScrollToItem(index)
+        }
     }
 
     val visibleMonth by remember {
